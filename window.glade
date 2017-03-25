@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.18.3 -->
+<!-- Generated with glade 3.20.0 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
   <object class="GtkAdjustment" id="adj_spin_btn_point1_line_coord_x">
@@ -137,18 +137,19 @@
   </object>
   <object class="GtkListStore" id="liststore_objects">
     <columns>
-      <!-- column-name Nome -->
-      <column type="gchararray"/>
+      <!-- column-name c1 -->
+      <column type="gchar"/>
+      <!-- column-name c2 -->
+      <column type="gchar"/>
     </columns>
     <data>
       <row>
-        <col id="0" translatable="yes"/>
+        <col id="0"/>
+        <col id="1"/>
       </row>
       <row>
-        <col id="0" translatable="yes"/>
-      </row>
-      <row>
-        <col id="0" translatable="yes"/>
+        <col id="0"/>
+        <col id="1"/>
       </row>
     </data>
   </object>
@@ -438,7 +439,6 @@
                                 <child>
                                   <object class="GtkTreeViewColumn" id="treeviewcolumn1">
                                     <property name="resizable">True</property>
-                                    <property name="sizing">autosize</property>
                                     <property name="title" translatable="yes">Nome</property>
                                     <property name="clickable">True</property>
                                     <property name="sort_column_id">0</property>
@@ -449,6 +449,7 @@
                                     <property name="resizable">True</property>
                                     <property name="title" translatable="yes">id</property>
                                     <property name="clickable">True</property>
+                                    <property name="sort_column_id">1</property>
                                   </object>
                                 </child>
                               </object>

@@ -60,3 +60,27 @@ void Testes::testando_ponto_linha_poligono(){
             
 }
 
+void Testes::testando_id(){
+    Ponto *p1 = new Ponto(new Coordenadas(100,20), "1");
+    Ponto *p2 = new Ponto(new Coordenadas(200,200), "2");
+    Ponto *p3 = new Ponto(new Coordenadas(300,20000), "3");
+    
+    Linha *l1 = new Linha(p2, p3, "1");
+    
+    vector<Ponto*> polygon_points;    
+        polygon_points.push_back(p3);
+        polygon_points.push_back(p2);
+        polygon_points.push_back(p1);
+        
+    Poligono* pol = new Poligono(polygon_points, "1");
+    
+    DisplayFile* df = new DisplayFile();
+    df->add_object(p1);
+    df->add_object(l1);
+    df->add_object(pol);
+    
+    cout << "ID objeto ponto: " << p1->get_id() << endl;
+    cout << "ID objeto linha: " << l1->get_id() << endl;
+    cout << "ID objeto poligono: " << pol->get_id() << endl;
+}
+

@@ -13,6 +13,6 @@ int main(int argc, char** argv) {
     return 0;
     
     Testes t;
-    t.testando_ponto_linha_poligono();
+    t.testando_id();
     
 }

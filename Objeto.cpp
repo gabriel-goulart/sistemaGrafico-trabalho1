@@ -14,6 +14,7 @@
 #include "Objeto.h"
 
 Objeto::Objeto() {
+    this->id = Iterador::iterar();
 }
 
 Objeto::Objeto(const Objeto& orig) {
@@ -28,6 +29,10 @@ Objeto::~Objeto() {
  */
 string Objeto::get_name(){
     return "OBJETO";
+}
+
+int Objeto::get_id(){
+    return this->id;
 }
 
 vector<Coordenadas*> Objeto::get_coordinates(){

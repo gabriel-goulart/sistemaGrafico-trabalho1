@@ -33,6 +33,7 @@ public:
     virtual ~Testes();
     
     void testando_ponto_linha_poligono();
+    void testando_id();
 private:
 
 };

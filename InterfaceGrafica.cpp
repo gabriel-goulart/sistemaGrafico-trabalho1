@@ -458,11 +458,30 @@ void InterfaceGrafica::load(int argc, char** argv){
   window_transformacao = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "window_transformacao") );
   drawing_area = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "drawing_area") );
  
+  
+  
+  //TESTE ----------------------------------------------------------------------------------------------------------
+    GtkTreeModel* object_list_model; //conecta o treemodel que voce criou no glade com um objeto no modelo
+    object_list_model = gtk_tree_view_get_model(GTK_TREE_VIEW( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "treeview1" ) ));
+    GtkTreeSelection* treeObjects; //objetos selecionados na tela
+    treeObjects = gtk_tree_view_get_selection(GTK_TREE_VIEW( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "treeview1" ) ));
+    GtkListStore *liststore = GTK_LIST_STORE(object_list_model);
+    GtkTreeIter iterator;
+    gtk_list_store_append(liststore, &iterator);
+    gtk_list_store_set(liststore, &iterator, 1, "aqui", 2, "aaa", -1);
+   //TESTE ----------------------------------------------------------------------------------------------------------
+  
+  
+  
   g_signal_connect (window_main, "destroy",G_CALLBACK (destroy_screen), NULL);
   g_signal_connect (drawing_area, "draw", G_CALLBACK (redraw), NULL);
   g_signal_connect (drawing_area, "configure-event", G_CALLBACK (create_surface), NULL); 
   
 
+  
+    
+  
+  
   Coordenadas *coord_ponto_max = new Coordenadas(480,500,0);
   Coordenadas *coord_ponto_min = new Coordenadas(0,0,0);
   
