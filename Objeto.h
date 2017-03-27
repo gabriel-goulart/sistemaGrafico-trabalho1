@@ -15,7 +15,6 @@
 #define OBJETO_H
 
 #include "Coordenadas.h"
-#include "Iterador.h"
 #include <string>
 #include <stddef.h>
 #include <vector>
@@ -28,12 +27,10 @@ public:
     virtual ~Objeto();
     
     virtual vector<Coordenadas*> get_coordinates();
-    virtual string get_name();
-    int get_id();
+    virtual string get_name();    
     
 protected:
     string name;
-    int id;
     vector<Coordenadas*> coordinates;
     
 private:
@@ -41,4 +38,5 @@ private:
 };
 
 #endif /* OBJETO_H */
+
 
