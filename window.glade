@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.20.0 -->
 <interface>
-  <requires lib="gtk+" version="3.12"/>
+  <requires lib="gtk+" version="3.10"/>
   <object class="GtkAdjustment" id="adj_spin_btn_point1_line_coord_x">
     <property name="lower">-100000</property>
     <property name="upper">1000000</property>
@@ -29,13 +29,13 @@
   <object class="GtkAdjustment" id="adj_spin_btn_point_coord_x">
     <property name="lower">-1000000</property>
     <property name="upper">1000000</property>
-    <property name="step_increment">0.01</property>
+    <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="adj_spin_btn_point_coord_y">
     <property name="lower">-100000</property>
     <property name="upper">1000000</property>
-    <property name="step_increment">0.01</property>
+    <property name="step_increment">1</property>
     <property name="page_increment">9.9999999997764828</property>
   </object>
   <object class="GtkAdjustment" id="adj_spin_btn_point_polygon_coord_x">
@@ -51,11 +51,13 @@
     <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="adj_transform_escalonamento_sx">
+    <property name="lower">-10000</property>
     <property name="upper">100000</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="adj_transform_escalonamento_sy">
+    <property name="lower">-10000</property>
     <property name="upper">100000</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
@@ -85,11 +87,13 @@
     <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="adj_transform_translacao_dx">
+    <property name="lower">-10000</property>
     <property name="upper">10000</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="adj_transform_translacao_dy">
+    <property name="lower">-10000</property>
     <property name="upper">10000</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
@@ -137,24 +141,15 @@
   </object>
   <object class="GtkListStore" id="liststore_objects">
     <columns>
-      <!-- column-name c1 -->
-      <column type="gchar"/>
-      <!-- column-name c2 -->
-      <column type="gchar"/>
+      <!-- column-name Nome -->
+      <column type="gchararray"/>
+      <!-- column-name id -->
+      <column type="gint"/>
     </columns>
-    <data>
-      <row>
-        <col id="0"/>
-        <col id="1"/>
-      </row>
-      <row>
-        <col id="0"/>
-        <col id="1"/>
-      </row>
-    </data>
+
   </object>
   <object class="GtkWindow" id="window_main">
-    <property name="width_request">900</property>
+    <property name="width_request">820</property>
     <property name="height_request">500</property>
     <property name="can_focus">False</property>
     <child>
@@ -383,18 +378,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButton" id="button1">
-                        <property name="label" translatable="yes">add</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <signal name="clicked" handler="btn_transform_clicked" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
+                      <placeholder/>
                     </child>
                     <child>
                       <placeholder/>
@@ -424,32 +408,34 @@
                             <property name="left_padding">12</property>
                             <child>
                               <object class="GtkTreeView" id="treeview1">
-                                <property name="height_request">116</property>
+                                <property name="height_request">178</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="margin_top">3</property>
-                                <property name="margin_bottom">32</property>
-                                <property name="hscroll_policy">natural</property>
                                 <property name="model">liststore_objects</property>
-                                <property name="search_column">0</property>
-                                <property name="enable_grid_lines">vertical</property>
+                                <signal name="row-activated" handler="list_object_transform_clicked" swapped="no"/>
                                 <child internal-child="selection">
                                   <object class="GtkTreeSelection" id="treeview-selection1"/>
                                 </child>
                                 <child>
                                   <object class="GtkTreeViewColumn" id="treeviewcolumn1">
-                                    <property name="resizable">True</property>
                                     <property name="title" translatable="yes">Nome</property>
-                                    <property name="clickable">True</property>
-                                    <property name="sort_column_id">0</property>
+                                    <child>
+                                      <object class="GtkCellRendererText" id="cellrenderertext1"/>
+                                      <attributes>
+                                        <attribute name="text">0</attribute>
+                                      </attributes>
+                                    </child>
                                   </object>
                                 </child>
                                 <child>
                                   <object class="GtkTreeViewColumn" id="treeviewcolumn2">
-                                    <property name="resizable">True</property>
                                     <property name="title" translatable="yes">id</property>
-                                    <property name="clickable">True</property>
-                                    <property name="sort_column_id">1</property>
+                                    <child>
+                                      <object class="GtkCellRendererText" id="cellrenderertext2"/>
+                                      <attributes>
+                                        <attribute name="text">1</attribute>
+                                      </attributes>
+                                    </child>
                                   </object>
                                 </child>
                               </object>
@@ -504,7 +490,7 @@
   </object>
   <object class="GtkWindow" id="window_add_object">
     <property name="width_request">500</property>
-    <property name="height_request">300</property>
+    <property name="height_request">200</property>
     <property name="can_focus">False</property>
     <property name="opacity">0.89000000000000001</property>
     <property name="halign">start</property>
@@ -716,7 +702,6 @@
             <property name="opacity">0.82999999999999996</property>
             <property name="margin_left">5</property>
             <property name="margin_right">10</property>
-            <property name="margin_bottom">5</property>
             <property name="resize_mode">immediate</property>
             <property name="label_xalign">0</property>
             <property name="shadow_type">in</property>
@@ -774,13 +759,14 @@
                         <property name="opacity">0.98999999999999999</property>
                         <property name="margin_right">10</property>
                         <property name="margin_top">10</property>
-                        <property name="margin_bottom">10</property>
+                        <property name="margin_bottom">1</property>
                         <property name="label_xalign">0</property>
                         <property name="shadow_type">in</property>
                         <child>
                           <object class="GtkAlignment" id="alignment7">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="margin_bottom">16</property>
                             <property name="bottom_padding">10</property>
                             <property name="left_padding">12</property>
                             <child>
@@ -897,7 +883,6 @@
                                         <property name="can_focus">False</property>
                                         <property name="margin_right">10</property>
                                         <property name="margin_top">7</property>
-                                        <property name="margin_bottom">5</property>
                                         <property name="resize_mode">immediate</property>
                                         <property name="label_xalign">0</property>
                                         <property name="shadow_type">in</property>
@@ -912,7 +897,9 @@
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">False</property>
                                                 <property name="margin_right">10</property>
+                                                <property name="margin_bottom">7</property>
                                                 <property name="row_spacing">8</property>
+                                                <property name="row_homogeneous">True</property>
                                                 <property name="column_homogeneous">True</property>
                                                 <child>
                                                   <object class="GtkLabel" id="lb_add_object_line_point2_coord_x2">
@@ -1021,7 +1008,7 @@
                       <object class="GtkGrid" id="grid5">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_top">80</property>
+                        <property name="margin_top">44</property>
                         <property name="column_spacing">24</property>
                         <child>
                           <object class="GtkButton" id="btn_add_object_line_add">
@@ -1090,7 +1077,6 @@
             <property name="can_focus">False</property>
             <property name="margin_left">5</property>
             <property name="margin_right">10</property>
-            <property name="margin_bottom">5</property>
             <property name="label_xalign">0</property>
             <property name="shadow_type">in</property>
             <child>
@@ -1165,13 +1151,13 @@
                                 <property name="resize_mode">immediate</property>
                                 <property name="orientation">vertical</property>
                                 <property name="spacing">10</property>
-                                <property name="homogeneous">True</property>
                                 <child>
                                   <object class="GtkGrid" id="grid_add_object_polygon_points">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="margin_bottom">8</property>
-                                    <property name="row_spacing">6</property>
+                                    <property name="margin_bottom">55</property>
+                                    <property name="row_spacing">33</property>
+                                    <property name="column_spacing">18</property>
                                     <property name="column_homogeneous">True</property>
                                     <child>
                                       <object class="GtkLabel" id="lb_add_object_line_point1_coord_x2">
@@ -1244,7 +1230,6 @@
                                   <object class="GtkBox" id="box_add_object_polygon_points">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="margin_top">20</property>
                                     <property name="orientation">vertical</property>
                                     <child>
                                       <object class="GtkButton" id="btn_add_object_polygon_points">
@@ -1254,6 +1239,7 @@
                                         <property name="receives_default">True</property>
                                         <property name="margin_left">194</property>
                                         <property name="margin_right">295</property>
+                                        <property name="margin_bottom">35</property>
                                         <signal name="clicked" handler="window_add_object_btn_add_polygon" swapped="no"/>
                                       </object>
                                       <packing>
@@ -1292,7 +1278,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="margin_right">10</property>
-                        <property name="margin_top">105</property>
+                        <property name="margin_top">133</property>
                         <property name="column_spacing">25</property>
                         <child>
                           <object class="GtkButton" id="btn_add_object_point_add2">

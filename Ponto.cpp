@@ -26,6 +26,7 @@ Ponto::~Ponto() {
  * @param coord_y
  */
 Ponto::Ponto(Coordenadas* coord, string name) {
+    this->coordinates.clear();
     this->coordinates.push_back(coord);
     this->name = "PONTO_"+name;
 }

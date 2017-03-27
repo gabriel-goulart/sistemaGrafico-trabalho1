@@ -63,10 +63,8 @@ Objeto* Transformacao::translacao(Objeto* obj,float* coords)
     float** matriz = get_matriz_translacao(coords);
     int size = this->dimensao +1;  
     Objeto * obj_transformacao = obj;
-    cout<<"Transformacao ANTES- translacao"<<endl;
-    cout<<obj_transformacao->get_coordinates().at(0)->get_x() << " | " << obj_transformacao->get_coordinates().at(0)->get_y() << " | " << obj_transformacao->get_coordinates().at(0)->get_z()<<endl;
-   
-    for(i=0; i < obj->get_coordinates().size();i++)
+    
+    for(i=0; i < obj_transformacao->get_coordinates().size();i++)
     {
         float * coords_obj = new float[size];
         coords_obj[0]= obj_transformacao->get_coordinates().at(i)->get_x();
@@ -80,8 +78,6 @@ Objeto* Transformacao::translacao(Objeto* obj,float* coords)
         obj_transformacao->get_coordinates().at(i)->set_z(coords_obj[2]);
         
     }
-    cout<<"Transformacao - translacao"<<endl;
-    cout<<obj_transformacao->get_coordinates().at(0)->get_x() << " | " << obj_transformacao->get_coordinates().at(0)->get_y() << " | " << obj_transformacao->get_coordinates().at(0)->get_z()<<endl;
    
     obj= obj_transformacao;
     return obj;
@@ -104,9 +100,6 @@ Objeto* Transformacao::escalonamento(Objeto* obj,float* coords)
     
    Objeto * obj_transformacao = obj;
    
-   cout<<"Transformacao ANTES- escalonamento"<<endl;
-   cout<<obj_transformacao->get_coordinates().at(0)->get_x() << " | " << obj_transformacao->get_coordinates().at(0)->get_y() << " | " << obj_transformacao->get_coordinates().at(0)->get_z()<<endl;
-   
    for(i=0; i<obj_transformacao->get_coordinates().size();i++)
    {
        float * coords_obj = new float[size];
@@ -118,7 +111,6 @@ Objeto* Transformacao::escalonamento(Objeto* obj,float* coords)
        
     
        coords_obj = transformar(get_matriz_translacao(coord_centro_negativo),coords_obj);
-       cout<<coords_obj[0] << " - " << coords_obj[1] << "- " << coords_obj[2]<<endl;
        coords_obj = transformar(matriz,coords_obj);
        
        coords_obj = transformar(get_matriz_translacao(coord_centro),coords_obj);
@@ -127,9 +119,6 @@ Objeto* Transformacao::escalonamento(Objeto* obj,float* coords)
        obj_transformacao->get_coordinates().at(i)->set_y(coords_obj[1]);
        obj_transformacao->get_coordinates().at(i)->set_z(coords_obj[2]);
    }
-   
-   cout<<"Transformacao - escalonamento"<<endl;
-   cout<<obj_transformacao->get_coordinates().at(0)->get_x() << " | " << obj_transformacao->get_coordinates().at(0)->get_y() << " | " << obj_transformacao->get_coordinates().at(0)->get_z()<<endl;
    
    obj= obj_transformacao;
    return obj;
@@ -163,9 +152,6 @@ Objeto* Transformacao::rotacao(Objeto* obj,float* coords,int angulo, bool centro
        obj_transformacao->get_coordinates().at(i)->set_y(coords_obj[1]);
        obj_transformacao->get_coordinates().at(i)->set_z(coords_obj[2]);
     }
-    
-   cout<<"Transformacao - ROTACAO"<<endl;
-   cout<<obj_transformacao->get_coordinates().at(0)->get_x() << " | " << obj_transformacao->get_coordinates().at(0)->get_y() << " | " << obj_transformacao->get_coordinates().at(0)->get_z()<<endl;
    
    obj= obj_transformacao;
    return obj;

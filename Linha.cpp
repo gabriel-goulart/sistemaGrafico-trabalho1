@@ -31,6 +31,7 @@ Linha::Linha(Ponto* p1, Ponto* p2, string name){
 }
 
 vector<Coordenadas*> Linha::get_coordinates(){
+    this->coordinates.clear();
     this->coordinates.push_back(this->point1->get_coordinates().at(0));
     this->coordinates.push_back(this->point2->get_coordinates().at(0));
     return this->coordinates;

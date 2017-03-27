@@ -8,11 +8,13 @@ GtkWidget *window_main;     /*Janela principal do programa*/
 GtkWidget * window_transformacao;     /*Janela de transformacao de objeto*/
 GtkWidget *viewport;        /*Viewport*/
 GtkBuilder *gtkBuilder;     /*Demais itens do programa contidos no glade*/
- GtkWidget *drawing_area;   /*Área de desenho */
+GtkWidget *drawing_area;   /*Área de desenho */
+GtkListStore *lists_objetos_view; /* lista de objetos na interface grafica */
 Window *window_layout;      /*window de visualização (modelo) */
 DisplayFile *display_file;  /*Lista de obejetos do mundo*/
 Transformacao *transformacao; /* realiza transformações nos objetos*/
 int point_size = 10; /*defini o tamanho do ponto (essencial para o zoom em um ponto) */
+int index_object_transformation; /* index do objeto clicado na lista para ser transformado */
 static cairo_surface_t *surface = NULL;
 
 /******** FUNÇÕES DE AÇÕES DOS BOTÕES ***********/
@@ -81,8 +83,27 @@ extern "C" G_MODULE_EXPORT void btn_add_object_clicked(){
 extern "C" G_MODULE_EXPORT void close_window_add_object(){     
      gtk_widget_hide(window_add);
  } 
-extern "C" G_MODULE_EXPORT void btn_transform_clicked()
+/**
+ * Abre a tela de transformacao e pega o index do objeto que será transformado
+ * @param view
+ * @param path
+ * @param column
+ * @param user_data
+ */
+extern "C" G_MODULE_EXPORT void list_object_transform_clicked(GtkTreeView *view,GtkTreePath *path, GtkTreeViewColumn *column,gpointer user_data)
 {
+   GtkTreeIter   iter;
+  GtkTreeModel *model;
+
+  model = gtk_tree_view_get_model(view);
+
+  if (gtk_tree_model_get_iter(model, &iter, path))
+  {
+    gtk_tree_model_get(model, &iter, 1, &index_object_transformation, -1);
+    
+    //g_print ("The row containing the name '%d' has been double-clicked.\n", index);
+
+  }
     gtk_widget_show(window_transformacao);
 }
 extern "C" G_MODULE_EXPORT void close_window_transform(){     
@@ -102,8 +123,9 @@ extern "C" G_MODULE_EXPORT void btn_aplicar_transform_translacao_clicked(){
     coords_obj[0] = gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_point_coord_x));
     coords_obj[1] = gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_point_coord_y));
     coords_obj[2] = 1;
-    cout<<"TRANSLACAO - X : " << coords_obj[0] << " Y : " <<coords_obj[1]<<endl;
-     gtk_widget_hide(window_transformacao);
+    
+    Objeto *obj= transformacao->translacao(display_file->get_object_list().at(index_object_transformation),coords_obj);
+    gtk_widget_hide(window_transformacao);
  } 
 /**
  * Aplica escalonamento em um objeto selecionado
@@ -118,8 +140,9 @@ extern "C" G_MODULE_EXPORT void btn_aplicar_transform_escalonamento_clicked(){
     coords_obj[0] = gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_point_coord_x));
     coords_obj[1] = gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_point_coord_y));
     coords_obj[2] = 1;
-    cout<<"ESCALONAMENTO - X : " << coords_obj[0] << " Y : " <<coords_obj[1]<<endl;
-     gtk_widget_hide(window_transformacao);
+    
+    Objeto *obj = transformacao->escalonamento(display_file->get_object_list().at(index_object_transformation),coords_obj);
+    gtk_widget_hide(window_transformacao);
  } 
 /**
  * Aplica escalonamento em um objeto selecionado
@@ -158,10 +181,8 @@ extern "C" G_MODULE_EXPORT void btn_aplicar_transform_rotacao_clicked(){
         
     }
     
-    cout<<"ESCALONAMENTO - X : " << coords_obj[0] << " Y : " <<coords_obj[1] << " Angulo: " << (int)gtk_spin_button_get_value(GTK_SPIN_BUTTON(angulo)) << "centro: " << centro<<endl;
-    //transformacao->rotacao(objeto,coords_obj,(int)gtk_spin_button_get_value(GTK_SPIN_BUTTON(angulo)),centro);
-
-     gtk_widget_hide(window_transformacao);
+    Objeto * obj = transformacao->rotacao(display_file->get_object_list().at(index_object_transformation),coords_obj,(int)gtk_spin_button_get_value(GTK_SPIN_BUTTON(angulo)),centro);
+    gtk_widget_hide(window_transformacao);
  } 
 
 /**
@@ -182,7 +203,10 @@ extern "C" G_MODULE_EXPORT void window_add_object_btn_add_point(GtkWidget* g, gp
     
 
     InterfaceGrafica::add_display_file(p);
+    InterfaceGrafica::add_object_list_view(display_file->get_object_list().size() - 1);
     InterfaceGrafica::drawing_point(p);
+    gtk_widget_hide(window_add);
+    
  } 
 
 /**
@@ -216,7 +240,9 @@ extern "C" G_MODULE_EXPORT void window_add_object_btn_add_line(GtkWidget* g, gpo
            gtk_entry_get_text(GTK_ENTRY(entry_name)));
     
     InterfaceGrafica::add_display_file(l);
-    InterfaceGrafica::drawing_line(l);    
+    InterfaceGrafica::add_object_list_view(display_file->get_object_list().size() - 1);
+    InterfaceGrafica::drawing_line(l);   
+    gtk_widget_hide(window_add);
 }
 
 /**
@@ -244,7 +270,9 @@ extern "C" G_MODULE_EXPORT void window_add_object_btn_add_polygon(GtkWidget* g, 
         Poligono *p = new Poligono(polygon_points, gtk_entry_get_text(GTK_ENTRY(entry_name)));
         polygon_points.clear();
 	InterfaceGrafica::add_display_file(p);
+        InterfaceGrafica::add_object_list_view(display_file->get_object_list().size() - 1);;
         InterfaceGrafica::drawing_polygon(p);
+        gtk_widget_hide(window_add);
     }
 }
 
@@ -425,7 +453,16 @@ void InterfaceGrafica::add_display_file(Objeto *obj){
     display_file->add_object(obj);
 }
 /********* FIM DAS FUNÇÕES DE DESENHO *********/
-
+/**
+ * Adicionando objeto na list view na interface
+ */
+void InterfaceGrafica::add_object_list_view(int index)
+{
+  GtkTreeIter iter;
+  gtk_list_store_append(lists_objetos_view, &iter);
+  gtk_list_store_set(lists_objetos_view, &iter, 0,(char*)display_file->get_object_list().at(index)->get_name().c_str(), 1,index, -1); 
+ 
+}
 InterfaceGrafica::InterfaceGrafica() {
 }
 
@@ -458,20 +495,7 @@ void InterfaceGrafica::load(int argc, char** argv){
   window_transformacao = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "window_transformacao") );
   drawing_area = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "drawing_area") );
  
-  
-  
-  //TESTE ----------------------------------------------------------------------------------------------------------
-    GtkTreeModel* object_list_model; //conecta o treemodel que voce criou no glade com um objeto no modelo
-    object_list_model = gtk_tree_view_get_model(GTK_TREE_VIEW( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "treeview1" ) ));
-    GtkTreeSelection* treeObjects; //objetos selecionados na tela
-    treeObjects = gtk_tree_view_get_selection(GTK_TREE_VIEW( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "treeview1" ) ));
-    GtkListStore *liststore = GTK_LIST_STORE(object_list_model);
-    GtkTreeIter iterator;
-    gtk_list_store_append(liststore, &iterator);
-    gtk_list_store_set(liststore, &iterator, 1, "aqui", 2, "aaa", -1);
-   //TESTE ----------------------------------------------------------------------------------------------------------
-  
-  
+    
   
   g_signal_connect (window_main, "destroy",G_CALLBACK (destroy_screen), NULL);
   g_signal_connect (drawing_area, "draw", G_CALLBACK (redraw), NULL);
@@ -493,6 +517,12 @@ void InterfaceGrafica::load(int argc, char** argv){
   
   transformacao = new Transformacao(2);
  
+ 
+  GtkTreeView *treeview1 = GTK_TREE_VIEW(gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "treeview1"));
+  lists_objetos_view = GTK_LIST_STORE(gtk_tree_view_get_model(treeview1));
+  
+ 
+    
   gtk_builder_connect_signals(gtkBuilder, NULL);
   gtk_widget_show_all(window_main);
 
