@@ -24,38 +24,6 @@ Transformacao::Transformacao(const Transformacao& orig) {
 
 Transformacao::~Transformacao() {
 }
-/**
- * Transformação da window para a viewport
- * @param ponto
- * @param window_layout
- * @return 
- */
-Ponto* Transformacao::transformacao_viewport(Ponto* ponto, Window* window_layout)
-{
-    double aux0, aux1, aux2, x, y;  
-    Ponto *vp_min = new Ponto(new Coordenadas(0,0,0),"pviewportMIN");
-    Ponto *vp_max = new Ponto(new Coordenadas(480,500,0),"pviewportMAX");
-
-    aux0 = ponto->get_x() - window_layout->get_x_min();
-    aux1 = window_layout->get_x_max() - window_layout->get_x_min();
-    aux2 = vp_max->get_coordinates().at(0)->get_x() - vp_min->get_coordinates().at(0)->get_x();  
-    x = (aux0/aux1)*(aux2);
-
-    aux0 = ponto->get_y() - window_layout->get_y_min();
-    aux1 = window_layout->get_y_max() - window_layout->get_y_min();
-    aux2 = vp_max->get_coordinates().at(0)->get_y() - vp_min->get_coordinates().at(0)->get_y();
-    y = (1-(aux0/aux1))*(aux2);
-    /*
-    g_print("x window = %d, ",window_layout->get_x_max());
-    g_print("y window = %d\n",window_layout->get_y_max());
-      
-    g_print("x orig = %d, ", ponto->get_x());
-    g_print("y orig = %d\n", ponto->get_y());
-    g_print("x trans = %f, ", x);
-    g_print("y trans = %f\n", y); */
-
-    return new Ponto(new Coordenadas(x,y,0),"ponto transformado"); 
-}
 
 Objeto* Transformacao::translacao(Objeto* obj,float* coords)
 {
@@ -180,6 +148,41 @@ float* Transformacao::transformar(float** m, float* coords)
     }
     
     return coords_transformadas;
+}
+
+/**
+ * Faz a multiplicação de matrizes quadradas
+ * @param m1
+ * @param m2
+ * @return 
+ */
+float ** Transformacao::transformar(float** m1, float** m2)
+{
+    int i,j,X;
+    
+    float Aux;
+    int size = this->dimensao +1;  
+    float** matriz_resultante = new float*[size];
+    for(int i = 0; i < size; ++i)
+        matriz_resultante[i] = new float[size];
+    // percorre a linha na matriz m1
+    for(i=0; i<size; i++)
+    {
+        //percorre a coluna na matriz m2
+        for(j=0; j<size; j++)
+        {
+                 matriz_resultante[i][j]=0;
+                 // percorre a coluna na matriz m1 e a linha na matriz m2
+                 for(X=0; X<size; X++)
+                 {
+                    Aux += m1[i][X] * m2[X][j];
+                 }
+                 matriz_resultante[i][j]=Aux;
+                 Aux=0;
+         }
+    }
+        
+    return  matriz_resultante;
 }
 
 /**

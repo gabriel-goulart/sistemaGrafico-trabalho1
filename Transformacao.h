@@ -18,7 +18,6 @@
 #include <cmath>
 #include "Ponto.h"
 #include "Coordenadas.h"
-#include "Window.h"
 #include "Objeto.h"
 using namespace std;
 class Transformacao {
@@ -26,9 +25,8 @@ public:
     Transformacao(int);
     Transformacao(const Transformacao& orig);
     virtual ~Transformacao();
-    Ponto* transformacao_viewport(Ponto*,Window*);
     float* transformar(float **,float*);
-    
+    float** transformar(float**,float**);
     Objeto* translacao(Objeto*,float*);
     Objeto* escalonamento(Objeto*,float*);
     Objeto* rotacao(Objeto*,float*,int,bool);

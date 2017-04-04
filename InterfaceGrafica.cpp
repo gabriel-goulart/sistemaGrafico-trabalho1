@@ -442,7 +442,7 @@ Ponto* InterfaceGrafica::transform_viewport(Ponto* ponto){
     g_print("y trans = %f\n", y);
 
     return new Ponto(new Coordenadas(x,y,0),"ponto transformado"); */
-    return transformacao->transformacao_viewport(ponto,window_layout);
+    return window_layout->transformacao_viewport(ponto);
 }
 
 /**

@@ -14,6 +14,9 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 #include "Ponto.h"
+#include "Transformacao.h"
+#include "Poligono.h"
+#include "Coordenadas.h"
 class Window {
 public:
     Window(Ponto* min, Ponto* max);
@@ -27,9 +30,20 @@ public:
     void zoom_in();
     void zoom_out();
     void move_window(char,int);
+    Ponto* transformacao_viewport(Ponto*);
+    void rotacao(int);
+    void normalizacao_world();
+    void normalizacao_objeto();
+    Poligono* transform_window_em_objeto();
+    void gerar_matriz_normalizacao();
+    
 private:
     Ponto* window_max_point;
     Ponto* window_min_point;
+    Transformacao * transformacao;
+    int angulo;
+    float ** matriz_normalizacao;
+    
 };
 
 #endif /* WINDOW_H */
