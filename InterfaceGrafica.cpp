@@ -501,13 +501,9 @@ void InterfaceGrafica::load(int argc, char** argv){
   g_signal_connect (drawing_area, "draw", G_CALLBACK (redraw), NULL);
   g_signal_connect (drawing_area, "configure-event", G_CALLBACK (create_surface), NULL); 
   
-
   
-    
-  
-  
-  Coordenadas *coord_ponto_max = new Coordenadas(480,500,0);
-  Coordenadas *coord_ponto_min = new Coordenadas(0,0,0);
+  Coordenadas *coord_ponto_max = new Coordenadas(500,500,0);
+  Coordenadas *coord_ponto_min = new Coordenadas(-500,-500,0);
   
   // criando a window de visualização (modelo)
   window_layout = new Window(new Ponto(coord_ponto_min,"min_window"), new Ponto(coord_ponto_max,"max_window"));

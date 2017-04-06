@@ -146,7 +146,6 @@
       <!-- column-name id -->
       <column type="gint"/>
     </columns>
-
   </object>
   <object class="GtkWindow" id="window_main">
     <property name="width_request">820</property>
@@ -156,7 +155,7 @@
       <object class="GtkPaned" id="paned1">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-        <property name="position">481</property>
+        <property name="position">500</property>
         <property name="position_set">True</property>
         <child>
           <object class="GtkScrolledWindow" id="scrolledwindow1">
