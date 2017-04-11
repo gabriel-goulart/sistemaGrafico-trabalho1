@@ -20,6 +20,14 @@ static cairo_surface_t *surface = NULL;
 /******** FUNÇÕES DE AÇÕES DOS BOTÕES ***********/
 
 /**
+ * mudando o algoritmo de clipping, de acorodo com o radio button
+ */
+
+extern "C" G_MODULE_EXPORT void change_clipping(GtkButton *button, gpointer user_data){
+    g_print("funcionou 1 %s",gtk_button_get_label(button));
+}
+
+/**
  *  zoom in na tela de desenho
  */
 
@@ -349,17 +357,22 @@ gboolean InterfaceGrafica::redraw (GtkWidget *widget, cairo_t *cr,  gpointer dat
  * @param y
  */
 void InterfaceGrafica::drawing_point(Ponto *p){
-    Ponto *p2 = InterfaceGrafica::transform_viewport(p);
-    cairo_t *cr;
-    cr = cairo_create (surface);
-    
-    cairo_set_line_width (cr, point_size);
-    cairo_set_line_cap  (cr, CAIRO_LINE_CAP_ROUND); /* Round dot*/    
-    cairo_move_to (cr, p2->get_coordinates().at(0)->get_x(), p2->get_coordinates().at(0)->get_y()); cairo_line_to (cr, p2->get_coordinates().at(0)->get_x(), p2->get_coordinates().at(0)->get_y());/* a very short line is a dot */
-    cairo_stroke(cr);
-    
-    gtk_widget_queue_draw (window_main);
-    cairo_destroy (cr);
+    p = window_layout->clipping_point(p);
+    if(p->get_desenhar())
+    {
+        Ponto *p2 = InterfaceGrafica::transform_viewport(p);
+        cairo_t *cr;
+        cr = cairo_create (surface);
+
+        cairo_set_line_width (cr, point_size);
+        cairo_set_line_cap  (cr, CAIRO_LINE_CAP_ROUND); /* Round dot*/    
+        cairo_move_to (cr, p2->get_x(), p2->get_y()); cairo_line_to (cr, p2->get_x(), p2->get_y());/* a very short line is a dot */
+        cairo_stroke(cr);
+
+        gtk_widget_queue_draw (window_main);
+        cairo_destroy (cr);
+    }
+   
 }
 
 /**
@@ -367,17 +380,22 @@ void InterfaceGrafica::drawing_point(Ponto *p){
  * @param linha
  */
 void InterfaceGrafica::drawing_line(Linha * linha){
-    Ponto* p1 = InterfaceGrafica::transform_viewport(new Ponto(linha->get_coordinates().at(0),"ponto transformacao"));
-    Ponto* p2 = InterfaceGrafica::transform_viewport(new Ponto(linha->get_coordinates().at(1),"ponto transformacao"));
-    cairo_t *cr;
-    cr = cairo_create (surface);
- 
-    cairo_move_to(cr,p1->get_x(), p1->get_y()); //pega o ponto 1 da linha
-    cairo_line_to(cr,p2->get_x(), p2->get_y()); //pega o ponto 2 da linha
-    cairo_stroke(cr);
-    
-    gtk_widget_queue_draw (window_main);
-    cairo_destroy (cr);
+    linha = window_layout->clipping_line(linha,get_clipping_line_method());
+    if(linha->get_desenhar())
+    {
+        Ponto* p1 = InterfaceGrafica::transform_viewport(new Ponto(linha->get_coordinates().at(0),"ponto transformacao"));
+        Ponto* p2 = InterfaceGrafica::transform_viewport(new Ponto(linha->get_coordinates().at(1),"ponto transformacao"));
+        cairo_t *cr;
+        cr = cairo_create (surface);
+
+        cairo_move_to(cr,p1->get_x(), p1->get_y()); //pega o ponto 1 da linha
+        cairo_line_to(cr,p2->get_x(), p2->get_y()); //pega o ponto 2 da linha
+        cairo_stroke(cr);
+
+        gtk_widget_queue_draw (window_main);
+        cairo_destroy (cr);
+    }
+   
 }
 
 /**
@@ -399,8 +417,8 @@ void InterfaceGrafica::drawing_polygon(Poligono *poligono){
          Ponto* p1 = InterfaceGrafica::transform_viewport(new Ponto(poligono->get_coordinates().at(i),"ponto transformacao"));
          Ponto* p2 = InterfaceGrafica::transform_viewport(new Ponto(poligono->get_coordinates().at(index),"ponto transformacao"));
         
-        cairo_move_to(cr, p1->get_x(), p1->get_y());
-        cairo_line_to(cr, p2->get_x(), p2->get_y());
+        cairo_move_to(cr, p1->get_x_normalizado(), p1->get_y());
+        cairo_line_to(cr, p2->get_x_normalizado(), p2->get_y());
        // g_print("teste %d\n", i);
         
         cairo_stroke(cr);
@@ -442,6 +460,9 @@ Ponto* InterfaceGrafica::transform_viewport(Ponto* ponto){
     g_print("y trans = %f\n", y);
 
     return new Ponto(new Coordenadas(x,y,0),"ponto transformado"); */
+    //ponto = window_layout->normalizacao_objeto(ponto);
+   // g_print("ANTES TRANSFORM VIEW x orig = %d, ", ponto->get_x());
+   // g_print("ANTES TRANSFORM VIEW y orig = %d\n", ponto->get_y());    
     return window_layout->transformacao_viewport(ponto);
 }
 
@@ -451,6 +472,22 @@ Ponto* InterfaceGrafica::transform_viewport(Ponto* ponto){
  */
 void InterfaceGrafica::add_display_file(Objeto *obj){
     display_file->add_object(obj);
+}
+
+/**
+ * pega o metodo de clipping de linha escolhido na interface
+ * @return 
+ */
+int InterfaceGrafica::get_clipping_line_method()
+{
+   GtkWidget *button_clipping_line = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "radiobutton_clipping_sutherland") );
+  if(gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button_clipping_line)))
+  {
+      return 0;
+  }else{
+      return 1;
+  }
+   
 }
 /********* FIM DAS FUNÇÕES DE DESENHO *********/
 /**
@@ -494,7 +531,10 @@ void InterfaceGrafica::load(int argc, char** argv){
   window_add = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "window_add_object") );
   window_transformacao = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "window_transformacao") );
   drawing_area = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "drawing_area") );
- 
+  
+  // setando o radio button que ficará ativo como default
+  GtkWidget *button_clipping_line = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "radiobutton_clipping_sutherland") );
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button_clipping_line), TRUE);
     
   
   g_signal_connect (window_main, "destroy",G_CALLBACK (destroy_screen), NULL);
@@ -521,8 +561,14 @@ void InterfaceGrafica::load(int argc, char** argv){
   GtkTreeView *treeview1 = GTK_TREE_VIEW(gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "treeview1"));
   lists_objetos_view = GTK_LIST_STORE(gtk_tree_view_get_model(treeview1));
   
+  
+  
+ Linha* l =window_layout->clipping_line(new Linha(new Ponto(new Coordenadas(5,12,0),"p1"), new Ponto(new Coordenadas(15,17,0),"p2"), "l"),1); 
+ g_print("1 - x clipping = %d, ", l->get_coordinates().at(0)->get_x());
+ g_print("1 - y clipping = %d\n",  l->get_coordinates().at(0)->get_y());
+ g_print("2 - x clipping = %d, ", l->get_coordinates().at(1)->get_x());
+ g_print("2 - y clipping = %d\n",  l->get_coordinates().at(1)->get_y());
  
-    
   gtk_builder_connect_signals(gtkBuilder, NULL);
   gtk_widget_show_all(window_main);
 

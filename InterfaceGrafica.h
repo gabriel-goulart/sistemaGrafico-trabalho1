@@ -28,6 +28,7 @@ public:
     static Ponto* transform_viewport(Ponto *p);
     static void add_display_file(Objeto *obj);
     static void add_object_list_view(int index);
+    static int get_clipping_line_method();
 private:
    
 };

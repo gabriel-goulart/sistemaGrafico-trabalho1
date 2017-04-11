@@ -34,3 +34,16 @@ vector<Coordenadas*> Objeto::get_coordinates(){
     return this->coordinates;
 }
 
+vector<Coordenadas*> Objeto::get_coordinates_normalizadas(){
+    return this->coordinates_normalizadas;
+}
+
+void Objeto::set_desenhar(bool eh_para_desenhar)
+{
+    this->desenhar = eh_para_desenhar;
+}
+
+bool Objeto::get_desenhar()
+{
+    return this->desenhar;
+}

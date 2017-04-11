@@ -22,11 +22,16 @@ public:
     Ponto(const Ponto& orig);
     virtual ~Ponto();
     Ponto(Coordenadas*, string);
-    
+    Ponto(Coordenadas*,Coordenadas*, string);
     int get_x();
     int get_y();
     void set_x(int);
     void set_y(int);
+    
+    int get_x_normalizado();
+    int get_y_normalizado();
+    void set_x_normalizado(int);
+    void set_y_normalizado(int);
     string get_name();
 
 private:

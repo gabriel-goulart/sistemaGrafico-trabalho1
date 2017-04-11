@@ -27,7 +27,17 @@ Ponto::~Ponto() {
  */
 Ponto::Ponto(Coordenadas* coord, string name) {
     this->coordinates.clear();
+    this->coordinates_normalizadas.clear();
     this->coordinates.push_back(coord);
+    this->coordinates_normalizadas.push_back(coord);
+    this->name = "PONTO_"+name;
+}
+
+Ponto::Ponto(Coordenadas* coord,Coordenadas* coord_normalizada, string name) {
+    this->coordinates.clear();
+    this->coordinates_normalizadas.clear();
+    this->coordinates.push_back(coord);
+    this->coordinates_normalizadas.push_back(coord_normalizada);
     this->name = "PONTO_"+name;
 }
 
@@ -62,6 +72,36 @@ void Ponto::set_y(int val){
     this->coordinates.at(0)->set_y(val);
 }
 
+/**
+ * Recupera a coordenada x do ponto normalizado.
+ * @return x
+ */
+int Ponto::get_x_normalizado(){
+    return this->coordinates_normalizadas.at(0)->get_x();
+}
+
+/**
+ * Recupera a coordenada y do ponto normalizado.
+ * @return y
+ */
+int Ponto::get_y_normalizado(){
+    return this->coordinates_normalizadas.at(0)->get_x();
+}
+/**
+ * Seta um novo valor para a coordenada x do ponto normalizado
+ * @param val
+ */
+void Ponto::set_x_normalizado(int val){
+    this->coordinates_normalizadas.at(0)->set_x(val);
+}
+
+/**
+ * Seta um novo valor para a coordenada y do ponto normalizado
+ * @param val
+ */
+void Ponto::set_y_normalizado(int val){
+    this->coordinates_normalizadas.at(0)->set_y(val);
+}
 /**
  * Recupera o nome do Ponto
  * @return 

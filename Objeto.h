@@ -27,12 +27,16 @@ public:
     virtual ~Objeto();
     
     virtual vector<Coordenadas*> get_coordinates();
+    virtual vector<Coordenadas*> get_coordinates_normalizadas();
+    virtual void set_desenhar(bool);
+    virtual bool get_desenhar();
     virtual string get_name();    
     
 protected:
     string name;
     vector<Coordenadas*> coordinates;
-    
+    vector<Coordenadas*> coordinates_normalizadas;
+    bool desenhar;
 private:
     
 };
