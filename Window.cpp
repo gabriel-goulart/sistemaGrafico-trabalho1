@@ -111,15 +111,15 @@ void Window::zoom_in(){
     
     if(this->get_x_max() > 2*this->get_x_min())
     {
-       this->window_max_point->get_coordinates().at(0)->set_x(this->get_x_max() - 10);
-       this->window_min_point->get_coordinates().at(0)->set_x(this->get_x_min() + 30);
+       this->window_max_point->get_coordinates().at(0)->set_x(this->get_x_max() - 20);
+       this->window_min_point->get_coordinates().at(0)->set_x(this->get_x_min() + 20);
 
     }
     
     if(this->get_y_max() > 2*this->get_y_min())
     {
-       this->window_max_point->get_coordinates().at(0)->set_y(this->get_y_max() - 10);
-       this->window_min_point->get_coordinates().at(0)->set_y(this->get_y_min() + 30); 
+       this->window_max_point->get_coordinates().at(0)->set_y(this->get_y_max() - 20);
+       this->window_min_point->get_coordinates().at(0)->set_y(this->get_y_min() + 20); 
     }
    
 }
@@ -129,13 +129,13 @@ void Window::zoom_in(){
  */
 void Window::zoom_out()
 {
-    this->window_max_point->get_coordinates().at(0)->set_x(this->get_x_max() + 10);
-    this->window_max_point->get_coordinates().at(0)->set_y(this->get_y_max() + 10);
+    this->window_max_point->get_coordinates().at(0)->set_x(this->get_x_max() + 20);
+    this->window_max_point->get_coordinates().at(0)->set_y(this->get_y_max() + 20);
     
-    this->window_min_point->get_coordinates().at(0)->set_x(this->get_x_min() - 30);
-    this->window_min_point->get_coordinates().at(0)->set_y(this->get_y_min() - 30);
-    
-    
+
+    this->window_min_point->get_coordinates().at(0)->set_x(this->get_x_min() - 20);
+    this->window_min_point->get_coordinates().at(0)->set_y(this->get_y_min() - 20);
+
 }
 
 /**
@@ -165,7 +165,7 @@ Ponto* Window::transformacao_viewport(Ponto* ponto)
 
     double aux0, aux1, aux2, x, y;  
     Ponto *vp_min = new Ponto(new Coordenadas(0,0,0),"pviewportMIN");
-    Ponto *vp_max = new Ponto(new Coordenadas(480,500,0),"pviewportMAX");
+    Ponto *vp_max = new Ponto(new Coordenadas(500,500,0),"pviewportMAX");
 
     aux0 = ponto->get_x() - this->get_x_min();
     aux1 = this->get_x_max() - this->get_x_min();
