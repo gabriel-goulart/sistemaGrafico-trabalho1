@@ -546,7 +546,7 @@ void InterfaceGrafica::load(int argc, char** argv){
     
   
   
-  Coordenadas *coord_ponto_max = new Coordenadas(480,500,0);
+  Coordenadas *coord_ponto_max = new Coordenadas(500,500,0);
   Coordenadas *coord_ponto_min = new Coordenadas(0,0,0);
   
   // criando a window de visualização (modelo)
@@ -561,14 +561,7 @@ void InterfaceGrafica::load(int argc, char** argv){
   GtkTreeView *treeview1 = GTK_TREE_VIEW(gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "treeview1"));
   lists_objetos_view = GTK_LIST_STORE(gtk_tree_view_get_model(treeview1));
   
-  
-  
- Linha* l =window_layout->clipping_line(new Linha(new Ponto(new Coordenadas(5,12,0),"p1"), new Ponto(new Coordenadas(15,17,0),"p2"), "l"),1); 
- g_print("1 - x clipping = %d, ", l->get_coordinates().at(0)->get_x());
- g_print("1 - y clipping = %d\n",  l->get_coordinates().at(0)->get_y());
- g_print("2 - x clipping = %d, ", l->get_coordinates().at(1)->get_x());
- g_print("2 - y clipping = %d\n",  l->get_coordinates().at(1)->get_y());
- 
+   
   gtk_builder_connect_signals(gtkBuilder, NULL);
   gtk_widget_show_all(window_main);
 

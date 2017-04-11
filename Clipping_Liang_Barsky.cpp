@@ -99,11 +99,11 @@ Linha* Clipping_Liang_Barsky::process(Linha* obj)
        x1 =(float) obj->get_coordinates().at(0)->get_x();
        y1 =(float) obj->get_coordinates().at(0)->get_y();
    }
-      
+     
    if(fator_u2 != 1)
    {
-     x2 =(float) obj->get_coordinates().at(1)->get_x() + (fator_u1 *-1* p_valores_positivos[0]);
-     y2 =(float) obj->get_coordinates().at(1)->get_y() + (fator_u1 *-1*p_valores_positivos[1]);  
+     x2 =(float) obj->get_coordinates().at(1)->get_x() + (fator_u2 *-1* p_valores_positivos[0]);
+     y2 =(float) obj->get_coordinates().at(1)->get_y() + (fator_u2 *-1*p_valores_positivos[1]);  
    }else{
      x2 =(float) obj->get_coordinates().at(1)->get_x();
      y2 =(float) obj->get_coordinates().at(1)->get_y();
@@ -116,6 +116,7 @@ Linha* Clipping_Liang_Barsky::process(Linha* obj)
    if(x1 > this->ponto_max_window->get_x() || x1 < this->ponto_min_window->get_x()
        || y1 > this->ponto_max_window->get_y() ||y1 < this->ponto_min_window->get_y())
     {
+       
         obj->set_desenhar(false);
         return obj;
     }
@@ -123,6 +124,7 @@ Linha* Clipping_Liang_Barsky::process(Linha* obj)
    if(x2 > this->ponto_max_window->get_x() || x2 < this->ponto_min_window->get_x()
        || y2 > this->ponto_max_window->get_y() ||y2 < this->ponto_min_window->get_y())
     {
+       
         obj->set_desenhar(false);
         return obj;
     }
@@ -138,7 +140,7 @@ float Clipping_Liang_Barsky::u1(float* p, float*q)
    float r1 = (float) q[0] / p[0]; 
    float r2 = (float) q[1] / p[1];
    
-   if(r1 > 0 && r1 > r2)
+   if(r1 > 0 && r1 >= r2)
    {
        return r1;
    }else if(r2 > 0 && r2 > r1)
@@ -154,7 +156,8 @@ float Clipping_Liang_Barsky::u2(float* p, float*q)
    float r1 = (float) q[0] / p[0]; 
    float r2 = (float) q[1] / p[1];
    
-   if(r1 < 1 && r1 < r2)
+   cout << "R1 E R2 : " << r1 <<" : "  <<r2 <<endl;
+   if(r1 < 1 && r1 <= r2)
    {
        return r1;
    }else if(r2 < 1 && r2 < r1)
