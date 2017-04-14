@@ -38,14 +38,17 @@ Linha* Clipping_Sutherland::process(Linha* obj)
     
     if(this->completamente_contido(rc1,rc2))
     {
-        obj->set_desenhar(true);
-        return obj;
+       obj->set_desenhar(true);
+       return obj;
     }
     
     if(this->completamente_fora(rc1,rc2))
     {
-        obj->set_desenhar(false);
-        return obj;
+        //obj->set_desenhar(false);
+        Linha * l = new Linha(NULL,NULL,"");
+        l->set_desenhar(false);        
+        return l;
+        
     }
     
    float m = (float)(obj->get_coordinates().at(1)->get_y() - obj->get_coordinates().at(0)->get_y()) / (obj->get_coordinates().at(1)->get_x() - obj->get_coordinates().at(0)->get_x());
@@ -60,8 +63,11 @@ Linha* Clipping_Sutherland::process(Linha* obj)
     if(coords_clippadas1[0] > this->ponto_max_window->get_x() || coords_clippadas1[0] < this->ponto_min_window->get_x()
        || coords_clippadas1[1] > this->ponto_max_window->get_y() || coords_clippadas1[1] < this->ponto_min_window->get_y())
     {
-        obj->set_desenhar(false);
-        return obj;
+        //obj->set_desenhar(false);
+        Linha * l = new Linha(NULL,NULL,"");
+        l->set_desenhar(false);        
+        return l;
+     
     }
     
     float * coords_clippadas2 = avalia_rc(rc2,m,obj->get_coordinates().at(1));
@@ -69,8 +75,11 @@ Linha* Clipping_Sutherland::process(Linha* obj)
     if(coords_clippadas2[0] > this->ponto_max_window->get_x() || coords_clippadas2[0] < this->ponto_min_window->get_x()
        || coords_clippadas2[1] > this->ponto_max_window->get_y() || coords_clippadas2[1] < this->ponto_min_window->get_y())
     {
-        obj->set_desenhar(false);
-        return obj;
+        //obj->set_desenhar(false);
+        Linha * l = new Linha(NULL,NULL,"");
+        l->set_desenhar(false);        
+        return l;
+      
     }
    
    Linha * new_line = new Linha(new Ponto(new Coordenadas(coords_clippadas1[0],coords_clippadas1[1],0),"p1"), new Ponto(new Coordenadas(coords_clippadas2[0],coords_clippadas2[1],0),"p2"), "l");

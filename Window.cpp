@@ -301,3 +301,10 @@ Ponto* Window::clipping_point(Ponto* ponto)
     
     return ponto;
 }
+
+Poligono* Window::clipping_poligon(Poligono* poligono)
+{
+    Clipping_Sutherland_Hodgeman* clipping = new Clipping_Sutherland_Hodgeman(this->window_max_point->get_coordinates().at(0),this->window_min_point->get_coordinates().at(0));
+    Poligono* result = clipping->process(poligono);
+    return result;
+}

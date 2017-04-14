@@ -11,15 +11,15 @@
  * Created on 8 de Abril de 2017, 16:10
  */
 
-#include "Clipping_linha.h"
+#include "Clipping.h"
 
-Clipping_linha::Clipping_linha() {
+Clipping::Clipping() {
 }
 
-Clipping_linha::Clipping_linha(const Clipping_linha& orig) {
+Clipping::Clipping(const Clipping& orig) {
 }
 
-Clipping_linha::~Clipping_linha() {
+Clipping::~Clipping() {
 }
 
 

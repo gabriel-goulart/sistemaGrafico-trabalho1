@@ -15,12 +15,12 @@
 #define CLIPPING_SUTHERLAND_H
 #include <cstdlib>
 #include <iostream>
-#include "Clipping_linha.h"
+#include "Clipping.h"
 #include "Coordenadas.h"
 #include "Linha.h"
 using namespace std;
 
-class Clipping_Sutherland: public Clipping_linha {
+class Clipping_Sutherland: public Clipping{
 public:
     Clipping_Sutherland(Coordenadas*,Coordenadas*);
     Clipping_Sutherland(const Clipping_Sutherland& orig);

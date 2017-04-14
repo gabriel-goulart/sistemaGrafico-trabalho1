@@ -88,8 +88,10 @@ Linha* Clipping_Liang_Barsky::process(Linha* obj)
    cout<<"U2: " << fator_u2 <<endl;
    if(fator_u1 > fator_u2)
    {
-      obj->set_desenhar(false);
-      return obj;
+      //obj->set_desenhar(false);
+      Linha * l = new Linha(NULL,NULL,"");
+        l->set_desenhar(false);        
+        return l;
    }
    if(fator_u1 != 0)
    {
@@ -117,16 +119,20 @@ Linha* Clipping_Liang_Barsky::process(Linha* obj)
        || y1 > this->ponto_max_window->get_y() ||y1 < this->ponto_min_window->get_y())
     {
        
-        obj->set_desenhar(false);
-        return obj;
+        //obj->set_desenhar(false);
+        Linha * l = new Linha(NULL,NULL,"");
+        l->set_desenhar(false);        
+        return l;
     }
    
    if(x2 > this->ponto_max_window->get_x() || x2 < this->ponto_min_window->get_x()
        || y2 > this->ponto_max_window->get_y() ||y2 < this->ponto_min_window->get_y())
     {
        
-        obj->set_desenhar(false);
-        return obj;
+       // obj->set_desenhar(false);
+       Linha * l = new Linha(NULL,NULL,"");
+        l->set_desenhar(false);        
+        return l;
     }
    
    Linha * new_line = new Linha(new Ponto(new Coordenadas(x1,y1,0),"p1"), new Ponto(new Coordenadas(x2,y2,0),"p2"), "l");
@@ -137,8 +143,18 @@ Linha* Clipping_Liang_Barsky::process(Linha* obj)
 
 float Clipping_Liang_Barsky::u1(float* p, float*q)
 {
-   float r1 = (float) q[0] / p[0]; 
-   float r2 = (float) q[1] / p[1];
+    float r1 =0;float r2=0;
+    
+    if(p[0] != 0)
+    {
+     r1 = (float) q[0] / p[0];   
+    }
+    
+    if(p[1] != 0)
+    {
+      r2  = (float) q[1] / p[1];
+    }
+    
    
    if(r1 > 0 && r1 >= r2)
    {
@@ -153,8 +169,17 @@ float Clipping_Liang_Barsky::u1(float* p, float*q)
 
 float Clipping_Liang_Barsky::u2(float* p, float*q)
 {
-   float r1 = (float) q[0] / p[0]; 
-   float r2 = (float) q[1] / p[1];
+   float r1 =1;float r2=1;
+    
+    if(p[0] != 0)
+    {
+     r1 = (float) q[0] / p[0];   
+    }
+    
+    if(p[1] != 0)
+    {
+      r2  = (float) q[1] / p[1];
+    }
    
    cout << "R1 E R2 : " << r1 <<" : "  <<r2 <<endl;
    if(r1 < 1 && r1 <= r2)

@@ -21,9 +21,10 @@
 #include "Objeto.h"
 #include "Poligono.h"
 #include "Coordenadas.h"
-#include "Clipping_linha.h"
+#include "Clipping.h"
 #include "Clipping_Sutherland.h"
 #include "Clipping_Liang_Barsky.h"
+#include "Clipping_Sutherland_Hodgeman.h"
 using namespace std;
 
 class Window {
@@ -51,6 +52,7 @@ public:
     void gerar_matriz_normalizacao();
     Linha* clipping_line(Linha*,int);
     Ponto* clipping_point(Ponto*);
+    Poligono* clipping_poligon(Poligono*);
     
 private:
     Ponto* window_max_point;

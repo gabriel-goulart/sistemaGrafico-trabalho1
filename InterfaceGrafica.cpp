@@ -333,7 +333,7 @@ gboolean InterfaceGrafica::redraw (GtkWidget *widget, cairo_t *cr,  gpointer dat
   clear_surface ();
   int size = display_file->get_object_list().size();
   //g_print("sizeDF: %d\n", size);
-  
+   //InterfaceGrafica::drawing_polygon(window_layout->transform_window_em_objeto());
   for(int i=0; i < size;i++)
   {
       if(Ponto* vp = dynamic_cast<Ponto*>(display_file->get_object_list().at(i))) {
@@ -403,31 +403,37 @@ void InterfaceGrafica::drawing_line(Linha * linha){
  * @param *poligono
  */
 void InterfaceGrafica::drawing_polygon(Poligono *poligono){
-    cairo_t *cr;
-    cr = cairo_create (surface);    
-    int i, index;
-    int size = poligono->get_coordinates().size();
-    //g_print("size 2: %d\n", size);
-    for(i = 0; i < size; i++){
-        index = i+1;
-        
-        if(i == size-1){
-            index = 0;
+    poligono = window_layout->clipping_poligon(poligono);
+    
+    if(poligono->get_desenhar())
+    {
+       cairo_t *cr;
+        cr = cairo_create (surface);    
+        int i, index;
+        int size = poligono->get_coordinates().size();
+        //g_print("size 2: %d\n", size);
+        for(i = 0; i < size; i++){
+            index = i+1;
+
+            if(i == size-1){
+                index = 0;
+            }
+             Ponto* p1 = InterfaceGrafica::transform_viewport(new Ponto(poligono->get_coordinates().at(i),"ponto transformacao"));
+             Ponto* p2 = InterfaceGrafica::transform_viewport(new Ponto(poligono->get_coordinates().at(index),"ponto transformacao"));
+
+            cairo_move_to(cr, p1->get_x(), p1->get_y());
+            cairo_line_to(cr, p2->get_x(), p2->get_y());
+           // g_print("teste %d\n", i);
+
+            cairo_stroke(cr);
+
         }
-         Ponto* p1 = InterfaceGrafica::transform_viewport(new Ponto(poligono->get_coordinates().at(i),"ponto transformacao"));
-         Ponto* p2 = InterfaceGrafica::transform_viewport(new Ponto(poligono->get_coordinates().at(index),"ponto transformacao"));
-        
-        cairo_move_to(cr, p1->get_x_normalizado(), p1->get_y());
-        cairo_line_to(cr, p2->get_x_normalizado(), p2->get_y());
-       // g_print("teste %d\n", i);
-        
-        cairo_stroke(cr);
-       
+       // g_print("aqui");   
+
+        gtk_widget_queue_draw (window_main);
+        cairo_destroy (cr); 
     }
-   // g_print("aqui");   
-   
-    gtk_widget_queue_draw (window_main);
-    cairo_destroy (cr);
+    
 }
 
 /**
@@ -543,7 +549,7 @@ void InterfaceGrafica::load(int argc, char** argv){
   
   
   Coordenadas *coord_ponto_max = new Coordenadas(500,500,0);
-  Coordenadas *coord_ponto_min = new Coordenadas(-500,-500,0);
+  Coordenadas *coord_ponto_min = new Coordenadas(5,5,0);
   
   // criando a window de visualização (modelo)
   window_layout = new Window(new Ponto(coord_ponto_min,"min_window"), new Ponto(coord_ponto_max,"max_window"));

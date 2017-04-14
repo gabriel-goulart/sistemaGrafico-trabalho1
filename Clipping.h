@@ -15,11 +15,11 @@
 #define CLIPPING_H
 #include "Linha.h"
 #include "Coordenadas.h"
-class Clipping_linha {
+class Clipping {
 public:
-    Clipping_linha();
-    Clipping_linha(const Clipping_linha& orig);
-    virtual ~Clipping_linha();
+    Clipping();
+    Clipping(const Clipping& orig);
+    virtual ~Clipping();
 protected:
     Coordenadas* ponto_max_window;
     Coordenadas* ponto_min_window;

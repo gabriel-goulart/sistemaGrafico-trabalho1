@@ -15,11 +15,11 @@
 #define CLIPPING_LIANG_BARSKY_H
 #include <cstdlib>
 #include <iostream>
-#include "Clipping_linha.h" 
+#include "Clipping.h" 
 #include "Linha.h"
 #include "Coordenadas.h"
 using namespace std;
-class Clipping_Liang_Barsky : public Clipping_linha{
+class Clipping_Liang_Barsky : public Clipping{
 public:
     Clipping_Liang_Barsky(Coordenadas*, Coordenadas*);
     Clipping_Liang_Barsky(const Clipping_Liang_Barsky& orig);
