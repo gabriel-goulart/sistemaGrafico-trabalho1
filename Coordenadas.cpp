@@ -13,7 +13,7 @@
 
 #include "Coordenadas.h"
 
-Coordenadas::Coordenadas(int x, int y, int z) {
+Coordenadas::Coordenadas(float x, float y, float z) {
     this->x = x;
     this->y = y;
     this->z = z;
@@ -29,7 +29,7 @@ Coordenadas::~Coordenadas() {
  * Pega o valor x da coordenada
  * @return 
  */
-int Coordenadas::get_x(){
+float Coordenadas::get_x(){
     return this->x;
 }
 
@@ -37,7 +37,7 @@ int Coordenadas::get_x(){
  * Pega o valor y da coordenada
  * @return 
  */
-int Coordenadas::get_y(){
+float Coordenadas::get_y(){
     return this->y;
 }
 
@@ -45,7 +45,7 @@ int Coordenadas::get_y(){
  * Pega o valor z da coordenada
  * @return 
  */
-int Coordenadas::get_z(){
+float Coordenadas::get_z(){
     return this->z;
 }
 
@@ -53,7 +53,7 @@ int Coordenadas::get_z(){
  * Seta um novo valor para a coordenada x
  * @param val
  */
-void Coordenadas::set_x(int val){
+void Coordenadas::set_x(float val){
     this->x = val;
 }
 
@@ -61,7 +61,7 @@ void Coordenadas::set_x(int val){
  * Seta um novo valor para a coordenada z
  * @param val
  */
-void Coordenadas::set_y(int val){
+void Coordenadas::set_y(float val){
     this->y=val;
 }
 
@@ -69,6 +69,6 @@ void Coordenadas::set_y(int val){
  * Seta um novo valor para a coordenada z
  * @param val
  */
-void Coordenadas::set_z(int val){
+void Coordenadas::set_z(float val){
     this->z=val;
 }

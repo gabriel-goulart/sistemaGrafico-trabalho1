@@ -16,20 +16,20 @@
 
 class Coordenadas {
 public:
-    Coordenadas(int x, int y, int z = 0);
+    Coordenadas(float x, float y, float z = 0);
     Coordenadas(const Coordenadas& orig);
     virtual ~Coordenadas();
     
-    int get_x();
-    int get_y();
-    int get_z();
-    void set_x(int);
-    void set_y(int);
-    void set_z(int);
+    float get_x();
+    float get_y();
+    float get_z();
+    void set_x(float);
+    void set_y(float);
+    void set_z(float);
 private:
-    int x;
-    int y;
-    int z;
+    float x;
+    float y;
+    float z;
 
 };
 

@@ -8,6 +8,8 @@
 #include "Objeto.h"
 #include "Poligono.h"
 #include "Linha.h"
+#include "Curva.h"
+#include "Curva_bezier.h"
 #include "Coordenadas.h"
 #include "DisplayFile.h"
 #include "Transformacao.h"
@@ -22,6 +24,7 @@ public:
     static void drawing_point(Ponto *ponto);
     static void drawing_line(Linha *linha);
     static void drawing_polygon(Poligono *p);
+    static void drawing_curva(Curva *curva);
     static gboolean create_surface (GtkWidget *widget, GdkEventConfigure *event, gpointer data);
     static void clear_surface ();
     static gboolean redraw (GtkWidget *widget, cairo_t   *cr,  gpointer   data);  

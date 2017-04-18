@@ -284,6 +284,66 @@ extern "C" G_MODULE_EXPORT void window_add_object_btn_add_polygon(GtkWidget* g, 
     }
 }
 
+/**
+ * Pega ação do click do botão para adicionar um objeto curva.
+ * @param g
+ * @param data
+ */
+vector<Curva*> curvas;
+extern "C" G_MODULE_EXPORT void window_add_object_btn_add_curva(GtkWidget* g, gpointer data)
+{
+     GtkWidget *entry_name = GTK_WIDGET( 
+            gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "entry_add_object_curva_name") );
+     GtkWidget *spin_button_precisao = GTK_WIDGET( 
+            gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "spinbtn_add_object_curva_precisao") );
+    
+    if(std::strcmp(gtk_button_get_label (GTK_BUTTON(g)),"Adicionar Ponto") == 0){
+       
+        GtkWidget *spin_button_point1_coord_x = GTK_WIDGET( 
+            gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "spinbtn_add_object_curva_point1_coord_x") );
+        GtkWidget *spin_button_point1_coord_y = GTK_WIDGET( 
+            gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "spinbtn_add_object_curva_point1_coord_y") );
+        
+        GtkWidget *spin_button_point2_coord_x = GTK_WIDGET( 
+            gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "spinbtn_add_object_curva_point2_coord_x") );
+        GtkWidget *spin_button_point2_coord_y = GTK_WIDGET( 
+            gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "spinbtn_add_object_curva_point2_coord_y") );
+        
+        GtkWidget *spin_button_point3_coord_x = GTK_WIDGET( 
+            gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "spinbtn_add_object_curva_point3_coord_x") );
+        GtkWidget *spin_button_point3_coord_y = GTK_WIDGET( 
+            gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "spinbtn_add_object_curva_point3_coord_y") );
+        
+        GtkWidget *spin_button_point4_coord_x = GTK_WIDGET( 
+            gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "spinbtn_add_object_curva_point4_coord_x") );
+        GtkWidget *spin_button_point4_coord_y = GTK_WIDGET( 
+            gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "spinbtn_add_object_curva_point4_coord_y") );
+        
+        vector<Ponto*> curva_points;
+        curva_points.push_back(new Ponto(new Coordenadas(gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_point1_coord_x)),gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_point1_coord_y)),0),"p"));
+        curva_points.push_back(new Ponto(new Coordenadas(gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_point2_coord_x)),gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_point2_coord_y)),0),"p"));
+        curva_points.push_back(new Ponto(new Coordenadas(gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_point3_coord_x)),gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_point3_coord_y)),0),"p"));
+        curva_points.push_back(new Ponto(new Coordenadas(gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_point4_coord_x)),gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_point4_coord_y)),0),"p"));
+        Curva_bezier *curva_b = new Curva_bezier();
+        Curva *c = curva_b->process(curva_points,gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_precisao)),gtk_entry_get_text(GTK_ENTRY(entry_name)));
+        curvas.push_back(c);
+    }else{
+        
+        
+        int i;
+        for(i=0; i < curvas.size(); i++)
+        {
+            
+            InterfaceGrafica::add_display_file(curvas.at(i));
+            InterfaceGrafica::add_object_list_view(display_file->get_object_list().size() - 1);
+            InterfaceGrafica::drawing_curva(curvas.at(i));
+            
+        }
+	curvas.clear();
+        gtk_widget_hide(window_add);
+    }
+}
+
 /******** FIM DAS FUNÇÕES DE AÇÕES DOS BOTÕES ***********/
 
 /**
@@ -343,6 +403,9 @@ gboolean InterfaceGrafica::redraw (GtkWidget *widget, cairo_t *cr,  gpointer dat
       }else if(Poligono* vpol = dynamic_cast<Poligono*>(display_file->get_object_list().at(i))){
           InterfaceGrafica::drawing_polygon(vpol);
           //g_print("redraw: %d", i);
+      }else if(Curva* vcurva = dynamic_cast<Curva*>(display_file->get_object_list().at(i))){
+          InterfaceGrafica::drawing_curva(vcurva);
+          
       }
   } 
   
@@ -433,6 +496,44 @@ void InterfaceGrafica::drawing_polygon(Poligono *poligono){
         gtk_widget_queue_draw (window_main);
         cairo_destroy (cr); 
     }
+    
+}
+
+/**
+ * Desenha uma cruva.
+ * @param *curva
+ */
+void InterfaceGrafica::drawing_curva(Curva *curva){
+   // poligono = window_layout->clipping_poligon(poligono);
+    
+   // if(poligono->get_desenhar())
+   // {
+       cairo_t *cr;
+        cr = cairo_create (surface);    
+        int i, index;
+        int size = curva->get_coordinates().size();
+        //g_print("size 2: %d\n", size);
+        for(i = 0; i < size; i++){
+            index = i+1;
+             if(i == size-1){
+                 break;
+            }
+            
+             Ponto* p1 = InterfaceGrafica::transform_viewport(new Ponto(curva->get_coordinates().at(i),"ponto transformacao"));
+             Ponto* p2 = InterfaceGrafica::transform_viewport(new Ponto(curva->get_coordinates().at(index),"ponto transformacao"));
+
+            cairo_move_to(cr, p1->get_x(), p1->get_y());
+            cairo_line_to(cr, p2->get_x(), p2->get_y());
+           // g_print("teste %d\n", i);
+
+            cairo_stroke(cr);
+
+      }
+       // g_print("aqui");   
+
+        gtk_widget_queue_draw (window_main);
+        cairo_destroy (cr); 
+    //}
     
 }
 
@@ -558,12 +659,20 @@ void InterfaceGrafica::load(int argc, char** argv){
   display_file = new DisplayFile();
   
   transformacao = new Transformacao(2);
- 
+  
+   vector<Ponto*> curva_points;
+   curva_points.push_back(new Ponto(new Coordenadas(50,50,0),"p"));
+   curva_points.push_back(new Ponto(new Coordenadas(75,100,0),"p"));
+   curva_points.push_back(new Ponto(new Coordenadas(125,100,0),"p"));
+   curva_points.push_back(new Ponto(new Coordenadas(200,50,0),"p"));
+  Curva_bezier *curva_b = new Curva_bezier();
+  Curva *c = curva_b->process(curva_points,0.2,"curva1");
+  InterfaceGrafica::add_display_file(c);
  
   GtkTreeView *treeview1 = GTK_TREE_VIEW(gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "treeview1"));
   lists_objetos_view = GTK_LIST_STORE(gtk_tree_view_get_model(treeview1));
   
-   
+  
   gtk_builder_connect_signals(gtkBuilder, NULL);
   gtk_widget_show_all(window_main);
 
