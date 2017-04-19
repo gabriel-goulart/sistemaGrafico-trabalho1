@@ -297,7 +297,7 @@ extern "C" G_MODULE_EXPORT void window_add_object_btn_add_curva(GtkWidget* g, gp
      GtkWidget *spin_button_precisao = GTK_WIDGET( 
             gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "spinbtn_add_object_curva_precisao") );
     
-    if(std::strcmp(gtk_button_get_label (GTK_BUTTON(g)),"Adicionar Ponto") == 0){
+    if(std::strcmp(gtk_button_get_label (GTK_BUTTON(g)),"Adicionar Curva") == 0){
        
         GtkWidget *spin_button_point1_coord_x = GTK_WIDGET( 
             gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "spinbtn_add_object_curva_point1_coord_x") );
@@ -393,7 +393,7 @@ gboolean InterfaceGrafica::redraw (GtkWidget *widget, cairo_t *cr,  gpointer dat
   clear_surface ();
   int size = display_file->get_object_list().size();
   //g_print("sizeDF: %d\n", size);
-   //InterfaceGrafica::drawing_polygon(window_layout->transform_window_em_objeto());
+  InterfaceGrafica::drawing_polygon(window_layout->transform_window_em_objeto());
   for(int i=0; i < size;i++)
   {
       if(Ponto* vp = dynamic_cast<Ponto*>(display_file->get_object_list().at(i))) {
@@ -504,10 +504,10 @@ void InterfaceGrafica::drawing_polygon(Poligono *poligono){
  * @param *curva
  */
 void InterfaceGrafica::drawing_curva(Curva *curva){
-   // poligono = window_layout->clipping_poligon(poligono);
+    curva = window_layout->clipping_curva(curva);
     
-   // if(poligono->get_desenhar())
-   // {
+   if(curva->get_desenhar())
+    {
        cairo_t *cr;
         cr = cairo_create (surface);    
         int i, index;
@@ -533,7 +533,7 @@ void InterfaceGrafica::drawing_curva(Curva *curva){
 
         gtk_widget_queue_draw (window_main);
         cairo_destroy (cr); 
-    //}
+    }
     
 }
 
@@ -649,8 +649,8 @@ void InterfaceGrafica::load(int argc, char** argv){
   g_signal_connect (drawing_area, "configure-event", G_CALLBACK (create_surface), NULL); 
   
   
-  Coordenadas *coord_ponto_max = new Coordenadas(500,500,0);
-  Coordenadas *coord_ponto_min = new Coordenadas(5,5,0);
+  Coordenadas *coord_ponto_max = new Coordenadas(480,480);//500,500,0);
+  Coordenadas *coord_ponto_min = new Coordenadas(10,10);//5,5,0);
   
   // criando a window de visualização (modelo)
   window_layout = new Window(new Ponto(coord_ponto_min,"min_window"), new Ponto(coord_ponto_max,"max_window"));
@@ -660,14 +660,14 @@ void InterfaceGrafica::load(int argc, char** argv){
   
   transformacao = new Transformacao(2);
   
-   vector<Ponto*> curva_points;
+  /* vector<Ponto*> curva_points;
    curva_points.push_back(new Ponto(new Coordenadas(50,50,0),"p"));
    curva_points.push_back(new Ponto(new Coordenadas(75,100,0),"p"));
    curva_points.push_back(new Ponto(new Coordenadas(125,100,0),"p"));
    curva_points.push_back(new Ponto(new Coordenadas(200,50,0),"p"));
   Curva_bezier *curva_b = new Curva_bezier();
   Curva *c = curva_b->process(curva_points,0.2,"curva1");
-  InterfaceGrafica::add_display_file(c);
+  InterfaceGrafica::add_display_file(c); */
  
   GtkTreeView *treeview1 = GTK_TREE_VIEW(gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "treeview1"));
   lists_objetos_view = GTK_LIST_STORE(gtk_tree_view_get_model(treeview1));

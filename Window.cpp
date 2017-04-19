@@ -163,9 +163,9 @@ Ponto* Window::transformacao_viewport(Ponto* ponto)
 {
   // cout<<"OBJETO TRANSFORMACAO VIEW antes coord orginal" << ponto->get_coordinates().at(0)->get_x() << " - " << ponto->get_coordinates().at(0)->get_y() << endl;
 
-    double aux0, aux1, aux2, x, y;  
+    double aux0, aux1, aux2, x, y;  //0,0,0 e 500,500,0
     Ponto *vp_min = new Ponto(new Coordenadas(0,0,0),"pviewportMIN");
-    Ponto *vp_max = new Ponto(new Coordenadas(500,500,0),"pviewportMAX");
+    Ponto *vp_max = new Ponto(new Coordenadas(480,480,0),"pviewportMAX");
 
     aux0 = ponto->get_x() - this->get_x_min();
     aux1 = this->get_x_max() - this->get_x_min();
@@ -306,5 +306,12 @@ Poligono* Window::clipping_poligon(Poligono* poligono)
 {
     Clipping_Sutherland_Hodgeman* clipping = new Clipping_Sutherland_Hodgeman(this->window_max_point->get_coordinates().at(0),this->window_min_point->get_coordinates().at(0));
     Poligono* result = clipping->process(poligono);
+    return result;
+}
+
+Curva* Window::clipping_curva(Curva* curva)
+{
+    Clipping_Sutherland_Hodgeman* clipping = new Clipping_Sutherland_Hodgeman(this->window_max_point->get_coordinates().at(0),this->window_min_point->get_coordinates().at(0));
+    Curva* result = clipping->process(curva);
     return result;
 }

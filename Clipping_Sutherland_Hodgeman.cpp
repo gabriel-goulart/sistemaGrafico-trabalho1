@@ -46,6 +46,27 @@ Poligono* Clipping_Sutherland_Hodgeman::process(Poligono* obj)
 }
 
 /**
+ * processando o clipping de curvas
+ * @param 
+ * @return 
+ */
+Curva* Clipping_Sutherland_Hodgeman::process(Curva* obj)
+{
+    vector<Ponto*> linhas_interseccao = this->get_lines_intersects(obj);
+    if(linhas_interseccao.size() >=1)
+    {
+        Curva* p = new Curva(linhas_interseccao,"Curva clippado");
+        p->set_desenhar(true);
+        return p;
+    }else
+    {
+        Curva* p = new Curva(linhas_interseccao,"Curva clippado");
+        p->set_desenhar(false);
+        return p;
+    }
+}
+
+/**
  * Calculando os pontos de intersecção
  * @param obj
  * @return 
@@ -62,6 +83,42 @@ vector<Ponto*> Clipping_Sutherland_Hodgeman::get_lines_intersects(Poligono* obj)
         
         if(i == size-1){
             index = 0;
+        }      
+        Linha* l = new Linha(new Ponto(obj->get_coordinates().at(i),"ponto 1"),new Ponto(obj->get_coordinates().at(index),"ponto 2"),"ponto avaliacao");      
+        Clipping_Sutherland* clipping = new Clipping_Sutherland(this->ponto_max_window,this->ponto_min_window); 
+        l = clipping->process(l);
+        
+        
+        if(l->get_desenhar())
+        {
+            linhas_interseccao.push_back(new Ponto (new Coordenadas(l->get_coordinates().at(0)->get_x(),l->get_coordinates().at(0)->get_y(),0),"ponto"));
+            linhas_interseccao.push_back(new Ponto (new Coordenadas(l->get_coordinates().at(1)->get_x(),l->get_coordinates().at(1)->get_y(),0),"ponto"));
+
+        }
+        
+    }
+    
+    return linhas_interseccao;
+}
+
+
+/**
+ * Calculando os pontos de intersecção
+ * @param obj
+ * @return 
+ */
+vector<Ponto*> Clipping_Sutherland_Hodgeman::get_lines_intersects(Curva* obj)
+{
+    vector<Ponto*> linhas_interseccao;
+    int i;
+    int index;
+    int size = obj->get_coordinates().size();
+    
+    for(i = 0; i < size; i++){
+        index = i+1;
+        
+        if(i == size-1){
+           break;
         }      
         Linha* l = new Linha(new Ponto(obj->get_coordinates().at(i),"ponto 1"),new Ponto(obj->get_coordinates().at(index),"ponto 2"),"ponto avaliacao");      
         Clipping_Sutherland* clipping = new Clipping_Sutherland(this->ponto_max_window,this->ponto_min_window); 

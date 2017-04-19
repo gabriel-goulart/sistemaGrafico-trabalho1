@@ -19,6 +19,7 @@
 #include "Poligono.h"
 #include "Linha.h"
 #include "Ponto.h"
+#include "Curva.h"
 #include "Clipping_Sutherland.h"
 
 class Clipping_Sutherland_Hodgeman : public Clipping {
@@ -27,8 +28,10 @@ public:
     Clipping_Sutherland_Hodgeman(const Clipping_Sutherland_Hodgeman& orig);
     virtual ~Clipping_Sutherland_Hodgeman();
     Poligono* process(Poligono*);
+    Curva* process(Curva*);
 private:
     vector<Ponto*> get_lines_intersects(Poligono*);
+    vector<Ponto*> get_lines_intersects(Curva*);
 };
 
 #endif /* CLIPPING_WEILER_ATHERTON_H */

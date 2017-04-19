@@ -20,6 +20,7 @@
 #include "Transformacao.h"
 #include "Objeto.h"
 #include "Poligono.h"
+#include "Curva.h"
 #include "Coordenadas.h"
 #include "Clipping.h"
 #include "Clipping_Sutherland.h"
@@ -53,6 +54,7 @@ public:
     Linha* clipping_line(Linha*,int);
     Ponto* clipping_point(Ponto*);
     Poligono* clipping_poligon(Poligono*);
+    Curva* clipping_curva(Curva*);
     
 private:
     Ponto* window_max_point;

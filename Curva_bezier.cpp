@@ -41,7 +41,7 @@ Curva* Curva_bezier::process(vector<Ponto*> pontos, float precisao,string nome)
    float t= 0;
    vector<Ponto*> curva_points;
    
-   while(t < 1)
+   while(t <= 1)
    {
        float result_x = process_curva(x,t);
        float result_y = process_curva(y,t);
