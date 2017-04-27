@@ -20,14 +20,6 @@ static cairo_surface_t *surface = NULL;
 /******** FUNÇÕES DE AÇÕES DOS BOTÕES ***********/
 
 /**
- * mudando o algoritmo de clipping, de acorodo com o radio button
- */
-
-extern "C" G_MODULE_EXPORT void change_clipping(GtkButton *button, gpointer user_data){
-    g_print("funcionou 1 %s",gtk_button_get_label(button));
-}
-
-/**
  *  zoom in na tela de desenho
  */
 
@@ -284,66 +276,6 @@ extern "C" G_MODULE_EXPORT void window_add_object_btn_add_polygon(GtkWidget* g, 
     }
 }
 
-/**
- * Pega ação do click do botão para adicionar um objeto curva.
- * @param g
- * @param data
- */
-vector<Curva*> curvas;
-extern "C" G_MODULE_EXPORT void window_add_object_btn_add_curva(GtkWidget* g, gpointer data)
-{
-     GtkWidget *entry_name = GTK_WIDGET( 
-            gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "entry_add_object_curva_name") );
-     GtkWidget *spin_button_precisao = GTK_WIDGET( 
-            gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "spinbtn_add_object_curva_precisao") );
-    
-    if(std::strcmp(gtk_button_get_label (GTK_BUTTON(g)),"Adicionar Curva") == 0){
-       
-        GtkWidget *spin_button_point1_coord_x = GTK_WIDGET( 
-            gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "spinbtn_add_object_curva_point1_coord_x") );
-        GtkWidget *spin_button_point1_coord_y = GTK_WIDGET( 
-            gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "spinbtn_add_object_curva_point1_coord_y") );
-        
-        GtkWidget *spin_button_point2_coord_x = GTK_WIDGET( 
-            gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "spinbtn_add_object_curva_point2_coord_x") );
-        GtkWidget *spin_button_point2_coord_y = GTK_WIDGET( 
-            gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "spinbtn_add_object_curva_point2_coord_y") );
-        
-        GtkWidget *spin_button_point3_coord_x = GTK_WIDGET( 
-            gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "spinbtn_add_object_curva_point3_coord_x") );
-        GtkWidget *spin_button_point3_coord_y = GTK_WIDGET( 
-            gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "spinbtn_add_object_curva_point3_coord_y") );
-        
-        GtkWidget *spin_button_point4_coord_x = GTK_WIDGET( 
-            gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "spinbtn_add_object_curva_point4_coord_x") );
-        GtkWidget *spin_button_point4_coord_y = GTK_WIDGET( 
-            gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "spinbtn_add_object_curva_point4_coord_y") );
-        
-        vector<Ponto*> curva_points;
-        curva_points.push_back(new Ponto(new Coordenadas(gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_point1_coord_x)),gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_point1_coord_y)),0),"p"));
-        curva_points.push_back(new Ponto(new Coordenadas(gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_point2_coord_x)),gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_point2_coord_y)),0),"p"));
-        curva_points.push_back(new Ponto(new Coordenadas(gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_point3_coord_x)),gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_point3_coord_y)),0),"p"));
-        curva_points.push_back(new Ponto(new Coordenadas(gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_point4_coord_x)),gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_point4_coord_y)),0),"p"));
-        Curva_bezier *curva_b = new Curva_bezier();
-        Curva *c = curva_b->process(curva_points,gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_precisao)),gtk_entry_get_text(GTK_ENTRY(entry_name)));
-        curvas.push_back(c);
-    }else{
-        
-        
-        int i;
-        for(i=0; i < curvas.size(); i++)
-        {
-            
-            InterfaceGrafica::add_display_file(curvas.at(i));
-            InterfaceGrafica::add_object_list_view(display_file->get_object_list().size() - 1);
-            InterfaceGrafica::drawing_curva(curvas.at(i));
-            
-        }
-	curvas.clear();
-        gtk_widget_hide(window_add);
-    }
-}
-
 /******** FIM DAS FUNÇÕES DE AÇÕES DOS BOTÕES ***********/
 
 /**
@@ -393,7 +325,7 @@ gboolean InterfaceGrafica::redraw (GtkWidget *widget, cairo_t *cr,  gpointer dat
   clear_surface ();
   int size = display_file->get_object_list().size();
   //g_print("sizeDF: %d\n", size);
-  InterfaceGrafica::drawing_polygon(window_layout->transform_window_em_objeto());
+  
   for(int i=0; i < size;i++)
   {
       if(Ponto* vp = dynamic_cast<Ponto*>(display_file->get_object_list().at(i))) {
@@ -403,9 +335,6 @@ gboolean InterfaceGrafica::redraw (GtkWidget *widget, cairo_t *cr,  gpointer dat
       }else if(Poligono* vpol = dynamic_cast<Poligono*>(display_file->get_object_list().at(i))){
           InterfaceGrafica::drawing_polygon(vpol);
           //g_print("redraw: %d", i);
-      }else if(Curva* vcurva = dynamic_cast<Curva*>(display_file->get_object_list().at(i))){
-          InterfaceGrafica::drawing_curva(vcurva);
-          
       }
   } 
   
@@ -420,22 +349,17 @@ gboolean InterfaceGrafica::redraw (GtkWidget *widget, cairo_t *cr,  gpointer dat
  * @param y
  */
 void InterfaceGrafica::drawing_point(Ponto *p){
-    p = window_layout->clipping_point(p);
-    if(p->get_desenhar())
-    {
-        Ponto *p2 = InterfaceGrafica::transform_viewport(p);
-        cairo_t *cr;
-        cr = cairo_create (surface);
-
-        cairo_set_line_width (cr, point_size);
-        cairo_set_line_cap  (cr, CAIRO_LINE_CAP_ROUND); /* Round dot*/    
-        cairo_move_to (cr, p2->get_x(), p2->get_y()); cairo_line_to (cr, p2->get_x(), p2->get_y());/* a very short line is a dot */
-        cairo_stroke(cr);
-
-        gtk_widget_queue_draw (window_main);
-        cairo_destroy (cr);
-    }
-   
+    Ponto *p2 = InterfaceGrafica::transform_viewport(p);
+    cairo_t *cr;
+    cr = cairo_create (surface);
+    
+    cairo_set_line_width (cr, point_size);
+    cairo_set_line_cap  (cr, CAIRO_LINE_CAP_ROUND); /* Round dot*/    
+    cairo_move_to (cr, p2->get_coordinates().at(0)->get_x(), p2->get_coordinates().at(0)->get_y()); cairo_line_to (cr, p2->get_coordinates().at(0)->get_x(), p2->get_coordinates().at(0)->get_y());/* a very short line is a dot */
+    cairo_stroke(cr);
+    
+    gtk_widget_queue_draw (window_main);
+    cairo_destroy (cr);
 }
 
 /**
@@ -443,22 +367,17 @@ void InterfaceGrafica::drawing_point(Ponto *p){
  * @param linha
  */
 void InterfaceGrafica::drawing_line(Linha * linha){
-    linha = window_layout->clipping_line(linha,get_clipping_line_method());
-    if(linha->get_desenhar())
-    {
-        Ponto* p1 = InterfaceGrafica::transform_viewport(new Ponto(linha->get_coordinates().at(0),"ponto transformacao"));
-        Ponto* p2 = InterfaceGrafica::transform_viewport(new Ponto(linha->get_coordinates().at(1),"ponto transformacao"));
-        cairo_t *cr;
-        cr = cairo_create (surface);
-
-        cairo_move_to(cr,p1->get_x(), p1->get_y()); //pega o ponto 1 da linha
-        cairo_line_to(cr,p2->get_x(), p2->get_y()); //pega o ponto 2 da linha
-        cairo_stroke(cr);
-
-        gtk_widget_queue_draw (window_main);
-        cairo_destroy (cr);
-    }
-   
+    Ponto* p1 = InterfaceGrafica::transform_viewport(new Ponto(linha->get_coordinates().at(0),"ponto transformacao"));
+    Ponto* p2 = InterfaceGrafica::transform_viewport(new Ponto(linha->get_coordinates().at(1),"ponto transformacao"));
+    cairo_t *cr;
+    cr = cairo_create (surface);
+ 
+    cairo_move_to(cr,p1->get_x(), p1->get_y()); //pega o ponto 1 da linha
+    cairo_line_to(cr,p2->get_x(), p2->get_y()); //pega o ponto 2 da linha
+    cairo_stroke(cr);
+    
+    gtk_widget_queue_draw (window_main);
+    cairo_destroy (cr);
 }
 
 /**
@@ -466,75 +385,31 @@ void InterfaceGrafica::drawing_line(Linha * linha){
  * @param *poligono
  */
 void InterfaceGrafica::drawing_polygon(Poligono *poligono){
-    poligono = window_layout->clipping_poligon(poligono);
-    
-    if(poligono->get_desenhar())
-    {
-       cairo_t *cr;
-        cr = cairo_create (surface);    
-        int i, index;
-        int size = poligono->get_coordinates().size();
-        //g_print("size 2: %d\n", size);
-        for(i = 0; i < size; i++){
-            index = i+1;
-
-            if(i == size-1){
-                index = 0;
-            }
-             Ponto* p1 = InterfaceGrafica::transform_viewport(new Ponto(poligono->get_coordinates().at(i),"ponto transformacao"));
-             Ponto* p2 = InterfaceGrafica::transform_viewport(new Ponto(poligono->get_coordinates().at(index),"ponto transformacao"));
-
-            cairo_move_to(cr, p1->get_x(), p1->get_y());
-            cairo_line_to(cr, p2->get_x(), p2->get_y());
-           // g_print("teste %d\n", i);
-
-            cairo_stroke(cr);
-
+    cairo_t *cr;
+    cr = cairo_create (surface);    
+    int i, index;
+    int size = poligono->get_coordinates().size();
+    //g_print("size 2: %d\n", size);
+    for(i = 0; i < size; i++){
+        index = i+1;
+        
+        if(i == size-1){
+            index = 0;
         }
-       // g_print("aqui");   
-
-        gtk_widget_queue_draw (window_main);
-        cairo_destroy (cr); 
+         Ponto* p1 = InterfaceGrafica::transform_viewport(new Ponto(poligono->get_coordinates().at(i),"ponto transformacao"));
+         Ponto* p2 = InterfaceGrafica::transform_viewport(new Ponto(poligono->get_coordinates().at(index),"ponto transformacao"));
+        
+        cairo_move_to(cr, p1->get_x(), p1->get_y());
+        cairo_line_to(cr, p2->get_x(), p2->get_y());
+       // g_print("teste %d\n", i);
+        
+        cairo_stroke(cr);
+       
     }
-    
-}
-
-/**
- * Desenha uma cruva.
- * @param *curva
- */
-void InterfaceGrafica::drawing_curva(Curva *curva){
-    curva = window_layout->clipping_curva(curva);
-    
-   if(curva->get_desenhar())
-    {
-       cairo_t *cr;
-        cr = cairo_create (surface);    
-        int i, index;
-        int size = curva->get_coordinates().size();
-        //g_print("size 2: %d\n", size);
-        for(i = 0; i < size; i++){
-            index = i+1;
-             if(i == size-1){
-                 break;
-            }
-            
-             Ponto* p1 = InterfaceGrafica::transform_viewport(new Ponto(curva->get_coordinates().at(i),"ponto transformacao"));
-             Ponto* p2 = InterfaceGrafica::transform_viewport(new Ponto(curva->get_coordinates().at(index),"ponto transformacao"));
-
-            cairo_move_to(cr, p1->get_x(), p1->get_y());
-            cairo_line_to(cr, p2->get_x(), p2->get_y());
-           // g_print("teste %d\n", i);
-
-            cairo_stroke(cr);
-
-      }
-       // g_print("aqui");   
-
-        gtk_widget_queue_draw (window_main);
-        cairo_destroy (cr); 
-    }
-    
+   // g_print("aqui");   
+   
+    gtk_widget_queue_draw (window_main);
+    cairo_destroy (cr);
 }
 
 /**
@@ -567,9 +442,6 @@ Ponto* InterfaceGrafica::transform_viewport(Ponto* ponto){
     g_print("y trans = %f\n", y);
 
     return new Ponto(new Coordenadas(x,y,0),"ponto transformado"); */
-    //ponto = window_layout->normalizacao_objeto(ponto);
-   // g_print("ANTES TRANSFORM VIEW x orig = %d, ", ponto->get_x());
-   // g_print("ANTES TRANSFORM VIEW y orig = %d\n", ponto->get_y());    
     return window_layout->transformacao_viewport(ponto);
 }
 
@@ -579,22 +451,6 @@ Ponto* InterfaceGrafica::transform_viewport(Ponto* ponto){
  */
 void InterfaceGrafica::add_display_file(Objeto *obj){
     display_file->add_object(obj);
-}
-
-/**
- * pega o metodo de clipping de linha escolhido na interface
- * @return 
- */
-int InterfaceGrafica::get_clipping_line_method()
-{
-   GtkWidget *button_clipping_line = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "radiobutton_clipping_sutherland") );
-  if(gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button_clipping_line)))
-  {
-      return 0;
-  }else{
-      return 1;
-  }
-   
 }
 /********* FIM DAS FUNÇÕES DE DESENHO *********/
 /**
@@ -638,10 +494,7 @@ void InterfaceGrafica::load(int argc, char** argv){
   window_add = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "window_add_object") );
   window_transformacao = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "window_transformacao") );
   drawing_area = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "drawing_area") );
-  
-  // setando o radio button que ficará ativo como default
-  GtkWidget *button_clipping_line = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "radiobutton_clipping_sutherland") );
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button_clipping_line), TRUE);
+ 
     
   
   g_signal_connect (window_main, "destroy",G_CALLBACK (destroy_screen), NULL);
@@ -649,8 +502,8 @@ void InterfaceGrafica::load(int argc, char** argv){
   g_signal_connect (drawing_area, "configure-event", G_CALLBACK (create_surface), NULL); 
   
   
-  Coordenadas *coord_ponto_max = new Coordenadas(480,480);//500,500,0);
-  Coordenadas *coord_ponto_min = new Coordenadas(10,10);//5,5,0);
+  Coordenadas *coord_ponto_max = new Coordenadas(500,500,0);
+  Coordenadas *coord_ponto_min = new Coordenadas(-500,-500,0);
   
   // criando a window de visualização (modelo)
   window_layout = new Window(new Ponto(coord_ponto_min,"min_window"), new Ponto(coord_ponto_max,"max_window"));
@@ -659,20 +512,13 @@ void InterfaceGrafica::load(int argc, char** argv){
   display_file = new DisplayFile();
   
   transformacao = new Transformacao(2);
-  
-  /* vector<Ponto*> curva_points;
-   curva_points.push_back(new Ponto(new Coordenadas(50,50,0),"p"));
-   curva_points.push_back(new Ponto(new Coordenadas(75,100,0),"p"));
-   curva_points.push_back(new Ponto(new Coordenadas(125,100,0),"p"));
-   curva_points.push_back(new Ponto(new Coordenadas(200,50,0),"p"));
-  Curva_bezier *curva_b = new Curva_bezier();
-  Curva *c = curva_b->process(curva_points,0.2,"curva1");
-  InterfaceGrafica::add_display_file(c); */
+ 
  
   GtkTreeView *treeview1 = GTK_TREE_VIEW(gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "treeview1"));
   lists_objetos_view = GTK_LIST_STORE(gtk_tree_view_get_model(treeview1));
   
-  
+ 
+    
   gtk_builder_connect_signals(gtkBuilder, NULL);
   gtk_widget_show_all(window_main);
 

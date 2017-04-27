@@ -50,16 +50,6 @@ Objeto* Transformacao::translacao(Objeto* obj,float* coords)
     obj= obj_transformacao;
     return obj;
 }
-
-float* Transformacao::translacao(float* coords_point,float* coords)
-{
-    int i;
-    float** matriz = get_matriz_translacao(coords);
-    int size = this->dimensao +1;  
-    
-    float *coord = transformar(matriz,coords_point);
-    return coord;
-}
 /**
  * Realiza o escalonamento do objeto
  * @param obj
@@ -102,17 +92,6 @@ Objeto* Transformacao::escalonamento(Objeto* obj,float* coords)
    return obj;
 }
 
-float* Transformacao::escalonamento(float* coord_obj,float* coords)
-{
-   int i;int size = this->dimensao +1; 
-   float** matriz = get_matriz_escalonamento(coords);
-   
-   
-   float * coords_obj = new float[size];
-   coords_obj = transformar(matriz,coord_obj);
-   return coords_obj;
-}
-
 Objeto* Transformacao::rotacao(Objeto* obj,float* coords,int angulo, bool centro)
 {
     int i;int size = this->dimensao +1; 
@@ -144,16 +123,6 @@ Objeto* Transformacao::rotacao(Objeto* obj,float* coords,int angulo, bool centro
    
    obj= obj_transformacao;
    return obj;
-}
-
-float* Transformacao::rotacao(float* coord_obj,float* coords,int angulo)
-{
-    int i;int size = this->dimensao +1; 
-    float** matriz = get_matriz_rotacao(angulo);
-    float * coords_obj = new float[size];
-    coords_obj = transformar(matriz,coord_obj);
-    return coords_obj;
-   
 }
 /**
  * Realiza a multiplicação de matrizes para qualquer tipo de transformação
@@ -191,7 +160,7 @@ float ** Transformacao::transformar(float** m1, float** m2)
 {
     int i,j,X;
     
-    float Aux =0;
+    float Aux;
     int size = this->dimensao +1;  
     float** matriz_resultante = new float*[size];
     for(int i = 0; i < size; ++i)

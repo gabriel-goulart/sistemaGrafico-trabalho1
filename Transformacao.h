@@ -28,11 +28,8 @@ public:
     float* transformar(float **,float*);
     float** transformar(float**,float**);
     Objeto* translacao(Objeto*,float*);
-    float* translacao(float*,float*);
     Objeto* escalonamento(Objeto*,float*);
-    float* escalonamento(float*,float*);
     Objeto* rotacao(Objeto*,float*,int,bool);
-    float* rotacao(float*,float*,int);
     
     float** get_matriz_translacao(float *);
     float** get_matriz_escalonamento(float *);
