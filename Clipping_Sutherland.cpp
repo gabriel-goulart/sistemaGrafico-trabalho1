@@ -30,11 +30,11 @@ Linha* Clipping_Sutherland::process(Linha* obj)
 {
     int *rc1 = avalia_ponto(obj->get_coordinates().at(0));
     int *rc2 = avalia_ponto(obj->get_coordinates().at(1));
-    cout<< "Ponto 1 - " << obj->get_coordinates().at(0)->get_x() << " - " << obj->get_coordinates().at(0)->get_y() << endl;
-    cout<< "Ponto 2 - " << obj->get_coordinates().at(1)->get_x() << " - " << obj->get_coordinates().at(1)->get_y() << endl;
+    //cout<< "Ponto 1 - " << obj->get_coordinates().at(0)->get_x() << " - " << obj->get_coordinates().at(0)->get_y() << endl;
+    //cout<< "Ponto 2 - " << obj->get_coordinates().at(1)->get_x() << " - " << obj->get_coordinates().at(1)->get_y() << endl;
 
-    cout<<"RC1 - " << rc1[0] << rc1[1] << rc1[2] << rc1[3]<<endl;
-    cout<<"RC2 - " << rc2[0] << rc2[1] << rc2[2] << rc2[3]<<endl;
+   // cout<<"RC1 - " << rc1[0] << rc1[1] << rc1[2] << rc1[3]<<endl;
+   // cout<<"RC2 - " << rc2[0] << rc2[1] << rc2[2] << rc2[3]<<endl;
     
     if(this->completamente_contido(rc1,rc2))
     {
@@ -53,10 +53,10 @@ Linha* Clipping_Sutherland::process(Linha* obj)
     
    float m = (float)(obj->get_coordinates().at(1)->get_y() - obj->get_coordinates().at(0)->get_y()) / (obj->get_coordinates().at(1)->get_x() - obj->get_coordinates().at(0)->get_x());
     
-    cout<< "ponto1: " << obj->get_coordinates().at(0)->get_x() << "-" << obj->get_coordinates().at(0)->get_y()<<endl;
-    cout<< "ponto2: " << obj->get_coordinates().at(1)->get_x() << "-" << obj->get_coordinates().at(1)->get_y()<<endl;
+   // cout<< "ponto1: " << obj->get_coordinates().at(0)->get_x() << "-" << obj->get_coordinates().at(0)->get_y()<<endl;
+   // cout<< "ponto2: " << obj->get_coordinates().at(1)->get_x() << "-" << obj->get_coordinates().at(1)->get_y()<<endl;
     
-    cout<< "m : " << m <<endl;
+   // cout<< "m : " << m <<endl;
     
     float * coords_clippadas1 = avalia_rc(rc1,m,obj->get_coordinates().at(0));
     
@@ -142,7 +142,7 @@ float* Clipping_Sutherland::avalia_rc(int* rc, float m, Coordenadas* coord_obj)
     if(rc[0] ==0 && rc[1] ==0 && rc[2] ==0 && rc[3] ==0)
     {
       coords[0] = coord_obj->get_x(); coords[1] = coord_obj->get_y();
-      cout<< "rc : entrou em 0000" << endl;
+      //cout<< "rc : entrou em 0000" << endl;
       return coords;
       
 
@@ -150,7 +150,7 @@ float* Clipping_Sutherland::avalia_rc(int* rc, float m, Coordenadas* coord_obj)
     {
         coords[0] = this->ponto_max_window->get_x();
         coords[1] = m * (this->ponto_max_window->get_x() - coord_obj->get_x()) + coord_obj->get_y(); 
-        cout<< "rc : entrou em 0010" << endl;
+        //cout<< "rc : entrou em 0010" << endl;
         return coords;
         
     }else if(rc[0] ==0 && rc[1] ==1 && rc[2] ==1 && rc[3] ==0) //á direita e abaixo da window 
@@ -165,14 +165,14 @@ float* Clipping_Sutherland::avalia_rc(int* rc, float m, Coordenadas* coord_obj)
             coords[1] = this->ponto_min_window->get_y();
         }
         
-        cout<< "rc : entrou em 0011" << endl;
+        //cout<< "rc : entrou em 0011" << endl;
         return coords;
         
     }else if(rc[0] ==0 && rc[1] ==0 && rc[2] ==0 && rc[3] ==1) // á esquerda da window
     {
         coords[0] = this->ponto_min_window->get_x();
         coords[1]= m * (this->ponto_min_window->get_x() - coord_obj->get_x()) + coord_obj->get_y();
-        cout<< "rc : entrou em 0001" << endl;
+        //cout<< "rc : entrou em 0001" << endl;
         return coords;
         
     }else if(rc[0] ==1 && rc[1] ==0 && rc[2] ==0 && rc[3] ==1)// á esquedar e acima da window
@@ -188,14 +188,14 @@ float* Clipping_Sutherland::avalia_rc(int* rc, float m, Coordenadas* coord_obj)
             coords[0] = coord_obj->get_x() + (1/m)*(this->ponto_max_window->get_y() - coord_obj->get_y()); 
             coords[1] = this->ponto_max_window->get_y();
         }
-        cout<< "rc : entrou em 1001" << endl;
+        //cout<< "rc : entrou em 1001" << endl;
         return coords;
         
     }else if(rc[0] ==1 && rc[1] ==0 && rc[2] ==0 && rc[3] ==0)// acima da window
     {
         coords[0] = coord_obj->get_x() + (1/m)*(this->ponto_max_window->get_y() - coord_obj->get_y()); 
         coords[1] = this->ponto_max_window->get_y();
-        cout<< "rc : entrou em 1000" << endl;
+        //cout<< "rc : entrou em 1000" << endl;
         return coords;
         
     }else if(rc[0] ==1 && rc[1] ==0 && rc[2] ==1 && rc[3] ==0) // á direita e acima da window 
@@ -209,14 +209,14 @@ float* Clipping_Sutherland::avalia_rc(int* rc, float m, Coordenadas* coord_obj)
             coords[0] = coord_obj->get_x() + (1/m)*(this->ponto_max_window->get_y() - coord_obj->get_y()); 
             coords[1] = this->ponto_max_window->get_y();
         }
-        cout<< "rc : entrou em 1100" << endl;
+        //cout<< "rc : entrou em 1100" << endl;
         return coords;
         
     }else if(rc[0] ==0 && rc[1] ==1 && rc[2] ==0 && rc[3] ==0) // abaixo da window 
     {
         coords[0] = coord_obj->get_x() + (1/m)*(this->ponto_min_window->get_y() - coord_obj->get_y()); 
         coords[1] = this->ponto_min_window->get_y();
-        cout<< "rc : entrou em 0100" << endl;
+        //cout<< "rc : entrou em 0100" << endl;
         return coords;
         
     }else if(rc[0] ==0 && rc[1] ==1 && rc[2] ==0 && rc[3] ==1) // á esquerda e abaixo da window
@@ -232,7 +232,7 @@ float* Clipping_Sutherland::avalia_rc(int* rc, float m, Coordenadas* coord_obj)
            coords[0] = coord_obj->get_x() + (1/m)*(this->ponto_min_window->get_y() - coord_obj->get_y()); 
            coords[1] = this->ponto_min_window->get_y();
         }
-        cout<< "rc : entrou em 0110" << endl;
+       // cout<< "rc : entrou em 0110" << endl;
         return coords;
     }
     return NULL;

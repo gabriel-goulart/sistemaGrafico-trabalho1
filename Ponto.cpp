@@ -56,6 +56,14 @@ int Ponto::get_x(){
 int Ponto::get_y(){
     return this->coordinates.at(0)->get_y();
 }
+
+/**
+ * Recupera a coordenada z do ponto.
+ * @return y
+ */
+int Ponto::get_z(){
+    return this->coordinates.at(0)->get_z();
+}
 /**
  * Seta um novo valor para a coordenada x do ponto
  * @param val
@@ -70,6 +78,14 @@ void Ponto::set_x(int val){
  */
 void Ponto::set_y(int val){
     this->coordinates.at(0)->set_y(val);
+}
+
+/**
+ * Seta um novo valor para a coordenada y do ponto
+ * @param val
+ */
+void Ponto::set_z(int val){
+    this->coordinates.at(0)->set_z(val);
 }
 
 /**

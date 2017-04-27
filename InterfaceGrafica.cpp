@@ -285,7 +285,7 @@ extern "C" G_MODULE_EXPORT void window_add_object_btn_add_polygon(GtkWidget* g, 
 }
 
 /**
- * Pega ação do click do botão para adicionar um objeto curva.
+ * Pega ação do click do botão para adicionar um objeto curva com método bezier.
  * @param g
  * @param data
  */
@@ -342,6 +342,42 @@ extern "C" G_MODULE_EXPORT void window_add_object_btn_add_curva(GtkWidget* g, gp
 	curvas.clear();
         gtk_widget_hide(window_add);
     }
+}
+
+/**
+ * Pega ação do click do botão para adicionar um objeto curva com método b-spline.
+ * @param g
+ * @param data
+ */
+vector<Ponto*> curvas_spline;
+extern "C" G_MODULE_EXPORT void window_add_object_btn_add_curva_spline(GtkWidget* g, gpointer data)
+{
+    GtkWidget *entry_name = GTK_WIDGET( 
+            gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "entry_add_object_curva_name") );
+     GtkWidget *spin_button_precisao = GTK_WIDGET( 
+            gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "spinbtn_add_object_curva_precisao") );
+    
+    if(std::strcmp(gtk_button_get_label (GTK_BUTTON(g)),"Adicionar Ponto") == 0)
+    {
+        GtkWidget *spin_button_point1_coord_x = GTK_WIDGET( 
+            gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "spinbtn_add_object_curva_spline_point_coord_x") );
+        GtkWidget *spin_button_point1_coord_y = GTK_WIDGET( 
+            gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "spinbtn_add_object_curva_spline_point_coord_y") );
+        
+        curvas_spline.push_back(new Ponto(new Coordenadas(gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_point1_coord_x)),gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_point1_coord_y)),0),"p"));
+
+    }else
+    {
+        
+        Curva_B_Spline *curva_b = new Curva_B_Spline();
+        Curva *c = curva_b->process(curvas_spline,gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_button_precisao)),gtk_entry_get_text(GTK_ENTRY(entry_name)));
+        curvas_spline.clear();
+	InterfaceGrafica::add_display_file(c);
+        InterfaceGrafica::add_object_list_view(display_file->get_object_list().size() - 1);;
+        InterfaceGrafica::drawing_curva(c);
+        gtk_widget_hide(window_add);
+    }
+    
 }
 
 /******** FIM DAS FUNÇÕES DE AÇÕES DOS BOTÕES ***********/
@@ -663,11 +699,17 @@ void InterfaceGrafica::load(int argc, char** argv){
   /* vector<Ponto*> curva_points;
    curva_points.push_back(new Ponto(new Coordenadas(50,50,0),"p"));
    curva_points.push_back(new Ponto(new Coordenadas(75,100,0),"p"));
-   curva_points.push_back(new Ponto(new Coordenadas(125,100,0),"p"));
-   curva_points.push_back(new Ponto(new Coordenadas(200,50,0),"p"));
-  Curva_bezier *curva_b = new Curva_bezier();
-  Curva *c = curva_b->process(curva_points,0.2,"curva1");
-  InterfaceGrafica::add_display_file(c); */
+   curva_points.push_back(new Ponto(new Coordenadas(200,200,0),"p"));
+   curva_points.push_back(new Ponto(new Coordenadas(300,50,0),"p"));
+   curva_points.push_back(new Ponto(new Coordenadas(370,100,0),"p"));
+   curva_points.push_back(new Ponto(new Coordenadas(400,50,0),"p"));
+   
+  Curva_B_Spline *curva_b = new Curva_B_Spline();
+  Curva *c = curva_b->process(curva_points,0.1,"curva1");
+  g_print("Size = %d, ", c->get_coordinates().size());
+   g_print("x orig = %d, ", c->get_coordinates().at(16)->get_x());
+    g_print("y orig = %d\n",c->get_coordinates().at(16)->get_y());
+  InterfaceGrafica::add_display_file(c);  */
  
   GtkTreeView *treeview1 = GTK_TREE_VIEW(gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "treeview1"));
   lists_objetos_view = GTK_LIST_STORE(gtk_tree_view_get_model(treeview1));

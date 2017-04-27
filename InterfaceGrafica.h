@@ -10,6 +10,7 @@
 #include "Linha.h"
 #include "Curva.h"
 #include "Curva_bezier.h"
+#include "Curva_B_Spline.h"
 #include "Coordenadas.h"
 #include "DisplayFile.h"
 #include "Transformacao.h"
