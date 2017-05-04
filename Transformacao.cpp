@@ -25,6 +25,12 @@ Transformacao::Transformacao(const Transformacao& orig) {
 Transformacao::~Transformacao() {
 }
 
+/**
+ * Translação para 2d e 3d
+ * @param obj
+ * @param coords
+ * @return 
+ */
 Objeto* Transformacao::translacao(Objeto* obj,float* coords)
 {
     int i;
@@ -37,7 +43,14 @@ Objeto* Transformacao::translacao(Objeto* obj,float* coords)
         float * coords_obj = new float[size];
         coords_obj[0]= obj_transformacao->get_coordinates().at(i)->get_x();
         coords_obj[1]= obj_transformacao->get_coordinates().at(i)->get_y();
-        coords_obj[2]= 1;
+        
+        if(size > 3)
+        {
+          coords_obj[2]= obj_transformacao->get_coordinates().at(i)->get_z();
+          coords_obj[3]= 1;
+        }else{
+          coords_obj[2]= 1;  
+        }
         
         coords_obj = transformar(matriz,coords_obj);
         
@@ -51,6 +64,12 @@ Objeto* Transformacao::translacao(Objeto* obj,float* coords)
     return obj;
 }
 
+/**
+ * translaçao usando coordenadas ao inves de objetos 
+ * @param coords_point
+ * @param coords
+ * @return 
+ */
 float* Transformacao::translacao(float* coords_point,float* coords)
 {
     int i;
@@ -71,10 +90,18 @@ Objeto* Transformacao::escalonamento(Objeto* obj,float* coords)
    int i;int size = this->dimensao +1; 
    float** matriz = get_matriz_escalonamento(coords);
    float* coord_centro = get_objeto_centro(obj);
-   float* coord_centro_negativo = new float[3];
+   float* coord_centro_negativo = new float[size];
    coord_centro_negativo[0] = -1*coord_centro[0];
    coord_centro_negativo[1] = -1*coord_centro[1];
-   coord_centro_negativo[2] =  coord_centro[2];
+   
+   if(size > 3)
+       {
+          coord_centro_negativo[2]= -1*coord_centro[2];
+          coord_centro_negativo[3]= coord_centro[3];
+       }else{
+          coord_centro_negativo[2]= coord_centro[2];  
+       }
+  
     
    Objeto * obj_transformacao = obj;
    
@@ -83,7 +110,14 @@ Objeto* Transformacao::escalonamento(Objeto* obj,float* coords)
        float * coords_obj = new float[size];
        coords_obj[0]= obj_transformacao->get_coordinates().at(i)->get_x();
        coords_obj[1]= obj_transformacao->get_coordinates().at(i)->get_y();
-       coords_obj[2]= 1;
+       
+       if(size > 3)
+       {
+          coords_obj[2]= obj_transformacao->get_coordinates().at(i)->get_z();
+          coords_obj[3]= 1;
+       }else{
+          coords_obj[2]= 1;  
+       }
        
        float ** m = get_matriz_translacao(coord_centro_negativo);   
        
@@ -131,7 +165,9 @@ Objeto* Transformacao::rotacao(Objeto* obj,float* coords,int angulo, bool centro
        float * coords_obj = new float[size];
        coords_obj[0]= obj_transformacao->get_coordinates().at(i)->get_x();
        coords_obj[1]= obj_transformacao->get_coordinates().at(i)->get_y();
-       coords_obj[2]= 1;
+       coords_obj[2]= 1;  
+       
+      
        
        coords_obj = transformar(get_matriz_translacao(coords_negativo),coords_obj);
        coords_obj = transformar(matriz,coords_obj);
@@ -224,16 +260,24 @@ float ** Transformacao::transformar(float** m1, float** m2)
 float* Transformacao::get_objeto_centro(Objeto* obj)
 {
     int i;
-    int somaX=0; int somaY = 0;
-    float * coords_centro = new float[3];
+    float somaX=0; float somaY = 0;float somaZ;
+    int size = this->dimensao +1;  
+    float * coords_centro = new float[size];
     for(i=0; i < obj->get_coordinates().size(); i++)
     {
         somaX += obj->get_coordinates().at(i)->get_x();
         somaY += obj->get_coordinates().at(i)->get_y();
+        somaZ += obj->get_coordinates().at(i)->get_z();
     }
     coords_centro[0] = somaX / obj->get_coordinates().size();
     coords_centro[1] = somaY / obj->get_coordinates().size();
-    coords_centro[2] = 1;
+    if(size > 3)
+       {
+          coords_centro[2]= somaY / obj->get_coordinates().size();
+          coords_centro[3]= 1;
+       }else{
+          coords_centro[2]= 1;  
+       }
     return coords_centro;
 }
 /**
@@ -331,17 +375,17 @@ float ** Transformacao::get_matriz_rotacao(int angulo)
                   matriz_rotacao[i][y] = 1;
               }else
               {
-                 matriz_rotacao[i][y] = cos(angulo); 
+                 matriz_rotacao[i][y] = (float) cos(angulo); 
               }
           }else{
               if(i != size-1 and y != size-1)
               {
                  if(i == 0)
                  {
-                    matriz_rotacao[i][y] = - sin(angulo); 
+                    matriz_rotacao[i][y] = (float) -1* sin(angulo); 
                  }else
                  {
-                     matriz_rotacao[i][y] = sin(angulo);
+                     matriz_rotacao[i][y] = (float) sin(angulo);
                  }
               }else{
                   matriz_rotacao[i][y] = 0;
